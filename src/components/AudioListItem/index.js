@@ -6,18 +6,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import color from '../../misc/color';
 
 const getInfoText = (filename) => {
-    return filename.split('.')[0]
+    // return filename.split('.')[0]
+    return filename
 }
 
-const AudioListItem = ({ item, onOptionPress, onPlayAudioPress }) => {
-
-    const [isActivePlay, setIsActivePlay] = useState(null)
+const AudioListItem = ({ item, onOptionPress, onAudioPress, isActivePlay }) => {
 
     return (
-        <TouchableOpacity style={styles.container(isActivePlay)} onPress={() => {
-            setIsActivePlay(!isActivePlay)
-        }}>
-            <View style={styles.leftCont}>
+        <View style={styles.container(isActivePlay)}>
+            <TouchableOpacity style={styles.leftCont} onPress={onAudioPress}>
                 <View style={styles.imgCont}>
                     <Image style={styles.imgAudio} source={require('../../../assets/images/music.jpg')} />
                     <Image style={[styles.imgAudioPlay(isActivePlay), styles.imgAudio]} source={require('../../../assets/images/FB_IMG_1674360672194.jpg')} />
@@ -26,11 +23,11 @@ const AudioListItem = ({ item, onOptionPress, onPlayAudioPress }) => {
                     <Text numberOfLines={1} style={styles.filenameAudio(isActivePlay)}>{getInfoText(item.filename)}</Text>
                     <Text numberOfLines={1} style={styles.artistAudio}>{item.duration}</Text>
                 </View>
-            </View>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.rightCont} onPress={onOptionPress}>
                 <MaterialCommunityIcons name="dots-vertical" size={24} color={isActivePlay ? 'white' : color.FONT_MEDIUM} />
             </TouchableOpacity>
-        </TouchableOpacity>
+        </View>
     )
 }
 
