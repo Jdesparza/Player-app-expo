@@ -41,6 +41,7 @@ export class ListMusic extends Component {
         if (this.state.soundObj === null) {
             const playbackObj = new Audio.Sound()
             const status = await playbackObj.loadAsync({ uri: item.uri }, { shouldPlay: true })
+            // console.log(playbackObj)
             return this.setState({ ...this.state, playbackObj: playbackObj, soundObj: status, currentAudio: item, playing: true })
         }
 
@@ -60,7 +61,7 @@ export class ListMusic extends Component {
 
     rowRenderer = (type, item, index) => {
 
-        return <AudioListItem item={item} isActivePlay={this.state.playing}
+        return <AudioListItem uri={item.uri} filename={item.filename} isActivePlay={this.state.playing}
             onAudioPress={
                 () => {
                     this.handleAudioPress(item)

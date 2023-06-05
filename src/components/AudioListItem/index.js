@@ -1,29 +1,64 @@
 import { View, Text, Image, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styles from './styles'
+
+import MusicInfo from 'expo-music-info';
+
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import color from '../../misc/color';
 
-const getInfoText = (filename) => {
-    // return filename.split('.')[0]
-    return filename
+const getFilename = (filename) => {
+    // Eliminar el formato .mp3 y otros formatos de audio
+    const cleanedFilename = filename.replace(/\.(mp3|m4a)$/i, '');
+
+    // Eliminar otros formatos de audio
+    const cleanedFilenameWithoutAudio = cleanedFilename.replace(/\.(MP3|MP3_160K|MP3_128K)$/i, '');
+
+    return cleanedFilenameWithoutAudio;
 }
 
-const AudioListItem = ({ item, onOptionPress, onAudioPress, isActivePlay }) => {
+const AudioListItem = ({ uri, filename, onOptionPress, onAudioPress, isActivePlay }) => {
+
+    const [metadata, setMetadata] = useState({
+        title: filename,
+        artist: 'desconocido'
+    })
+
+    useEffect(() => {
+        // console.log(item.uri);
+        infoAudio()
+        // console.log(filename)
+    }, [])
+
+    const infoAudio = async () => {
+        let metadataInfo = await MusicInfo.getMusicInfoAsync(uri, {
+            title: true,
+            artist: true,
+            album: true,
+            genre: true,
+            picture: true
+        });
+        setMetadata(metadataInfo)
+        // console.log(metadataInfo.picture)
+    }
+
 
     return (
         <View style={styles.container(isActivePlay)}>
-            <TouchableOpacity style={styles.leftCont} onPress={onAudioPress}>
+            <View style={styles.leftCont} onPress={onAudioPress}>
                 <View style={styles.imgCont}>
-                    <Image style={styles.imgAudio} source={require('../../../assets/images/music.jpg')} />
+                    <Image style={styles.imgAudio} source={metadata !== null && metadata.picture ?
+                        { uri: metadata.picture.pictureData }
+                        :
+                        require('../../../assets/images/music.jpg')} />
                     <Image style={[styles.imgAudioPlay(isActivePlay), styles.imgAudio]} source={require('../../../assets/images/FB_IMG_1674360672194.jpg')} />
                 </View>
-                <View style={styles.infoAudio}>
-                    <Text numberOfLines={1} style={styles.filenameAudio(isActivePlay)}>{getInfoText(item.filename)}</Text>
-                    <Text numberOfLines={1} style={styles.artistAudio}>{item.duration}</Text>
-                </View>
-            </TouchableOpacity>
+                <TouchableOpacity style={styles.infoAudio}>
+                    <Text numberOfLines={1} style={styles.filenameAudio(isActivePlay)}>{metadata !== null && metadata.title ? metadata.title : getFilename(filename)}</Text>
+                    <Text numberOfLines={1} style={styles.artistAudio}>{metadata !== null && metadata.artist ? metadata.artist : 'desconocido'}</Text>
+                </TouchableOpacity>
+            </View>
             <TouchableOpacity style={styles.rightCont} onPress={onOptionPress}>
                 <MaterialCommunityIcons name="dots-vertical" size={24} color={isActivePlay ? 'white' : color.FONT_MEDIUM} />
             </TouchableOpacity>

@@ -1,13 +1,13 @@
-import { View, Text } from 'react-native'
-import React from 'react'
-import styles from './styles'
+import { useState } from "react";
+import { Image, Text, View, Button } from "react-native";
 
 const Player = () => {
+
     return (
-        <View style={styles.container}>
-            <Text>Player</Text>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+            <Text>Player Screen</Text>
         </View>
-    )
+    );
 }
 
 export default Player
