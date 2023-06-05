@@ -20,10 +20,7 @@ const getFilename = (filename) => {
 
 const AudioListItem = ({ uri, filename, onOptionPress, onAudioPress, isActivePlay }) => {
 
-    const [metadata, setMetadata] = useState({
-        title: filename,
-        artist: 'desconocido'
-    })
+    const [metadata, setMetadata] = useState(null)
 
     useEffect(() => {
         // console.log(item.uri);
@@ -35,30 +32,29 @@ const AudioListItem = ({ uri, filename, onOptionPress, onAudioPress, isActivePla
         let metadataInfo = await MusicInfo.getMusicInfoAsync(uri, {
             title: true,
             artist: true,
-            album: true,
-            genre: true,
+            album: false,
+            genre: false,
             picture: true
         });
         setMetadata(metadataInfo)
-        // console.log(metadataInfo.picture)
     }
 
 
     return (
         <View style={styles.container(isActivePlay)}>
-            <View style={styles.leftCont} onPress={onAudioPress}>
+            <TouchableOpacity style={styles.leftCont} onPress={onAudioPress} >
                 <View style={styles.imgCont}>
-                    <Image style={styles.imgAudio} source={metadata !== null && metadata.picture ?
+                    <Image style={styles.imgAudio} source={metadata !== null && metadata.picture !== null ?
                         { uri: metadata.picture.pictureData }
                         :
                         require('../../../assets/images/music.jpg')} />
                     <Image style={[styles.imgAudioPlay(isActivePlay), styles.imgAudio]} source={require('../../../assets/images/FB_IMG_1674360672194.jpg')} />
                 </View>
-                <TouchableOpacity style={styles.infoAudio}>
+                <View style={styles.infoAudio}>
                     <Text numberOfLines={1} style={styles.filenameAudio(isActivePlay)}>{metadata !== null && metadata.title ? metadata.title : getFilename(filename)}</Text>
                     <Text numberOfLines={1} style={styles.artistAudio}>{metadata !== null && metadata.artist ? metadata.artist : 'desconocido'}</Text>
-                </TouchableOpacity>
-            </View>
+                </View>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.rightCont} onPress={onOptionPress}>
                 <MaterialCommunityIcons name="dots-vertical" size={24} color={isActivePlay ? 'white' : color.FONT_MEDIUM} />
             </TouchableOpacity>

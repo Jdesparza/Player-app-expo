@@ -61,7 +61,7 @@ export class ListMusic extends Component {
 
     rowRenderer = (type, item, index) => {
 
-        return <AudioListItem uri={item.uri} filename={item.filename} isActivePlay={this.state.playing}
+        return <AudioListItem uri={item.uri} filename={item.filename} duration={item.duration} isActivePlay={this.state.playing}
             onAudioPress={
                 () => {
                     this.handleAudioPress(item)
