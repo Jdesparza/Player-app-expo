@@ -6,6 +6,7 @@ import { LayoutProvider, RecyclerListView } from 'recyclerlistview'
 import AudioListItem from '../../components/AudioListItem'
 import OptionsModal from '../../components/OptionsModal'
 import { Audio } from 'expo-av'
+import { pause, play, playNext, resume } from '../../misc/audioController'
 
 export class ListMusic extends Component {
 
@@ -16,9 +17,6 @@ export class ListMusic extends Component {
         this.state = {
             playing: false,
             optionModalVisible: false,
-            playbackObj: null,
-            soundObj: null,
-            currentAudio: {}
         }
 
         this.currentItem = {}
@@ -37,31 +35,45 @@ export class ListMusic extends Component {
     })
 
     handleAudioPress = async (item) => {
+
+        const { soundObj, playbackObj, currentAudio, updateState, audioFiles } = this.context
+
         // playing audio for the first time
-        if (this.state.soundObj === null) {
+        if (soundObj === null) {
             const playbackObj = new Audio.Sound()
-            const status = await playbackObj.loadAsync({ uri: item.uri }, { shouldPlay: true })
+            const status = await play(playbackObj, item.uri)
+            const index = audioFiles.indexOf(item)
             // console.log(playbackObj)
-            return this.setState({ ...this.state, playbackObj: playbackObj, soundObj: status, currentAudio: item, playing: true })
+            return updateState(this.context, { playbackObj: playbackObj, soundObj: status, currentAudio: item, isPlaying: true, currentAudioIndex: index })
         }
 
         // pause audio
-        if (this.state.soundObj.isLoaded && this.state.soundObj.isPlaying) {
-            const status = await this.state.playbackObj.setStatusAsync({ shouldPlay: false })
-            return this.setState({ ...this.state, soundObj: status, playing: false })
+        if (soundObj.isLoaded && soundObj.isPlaying &&
+            currentAudio.id === item.id) {
+            // audioController.pause()
+            const status = await pause(playbackObj)
+            return updateState(this.context, { soundObj: status, isPlaying: false })
         }
 
         // resume audio
-        if (this.state.soundObj.isLoaded && !this.state.soundObj.isPlaying &&
-            this.state.currentAudio.id === item.id) {
-            const status = await this.state.playbackObj.playAsync()
-            return this.setState({ ...this.state, soundObj: status, playing: true })
+        if (soundObj.isLoaded && !soundObj.isPlaying &&
+            currentAudio.id === item.id) {
+            const status = await resume(playbackObj)
+            return updateState(this.context, { soundObj: status, isPlaying: true })
+        }
+
+        // select another audio
+        if (soundObj.isLoaded && currentAudio.id !== item.id) {
+            const status = await playNext(playbackObj, item.uri)
+            const index = audioFiles.indexOf(item)
+            return updateState(this.context, { soundObj: status, currentAudio: item, isPlaying: true, currentAudioIndex: index })
         }
     }
 
-    rowRenderer = (type, item, index) => {
+    rowRenderer = (type, item, index, extendedState) => {
 
-        return <AudioListItem uri={item.uri} filename={item.filename} duration={item.duration} isActivePlay={this.state.playing}
+        return <AudioListItem uri={item.uri} filename={item.filename} duration={item.duration} isPlaying={extendedState.isPlaying}
+            activeListItem={this.context.currentAudioIndex === index}
             onAudioPress={
                 () => {
                     this.handleAudioPress(item)
@@ -77,13 +89,14 @@ export class ListMusic extends Component {
 
     render() {
         return <AudioContext.Consumer>
-            {({ dataProvider }) => {
+            {({ dataProvider, isPlaying }) => {
                 return (
                     <SafeAreaView style={{ flex: 1, backgroundColor: 'rgba(250,250,250,1)' }}>
                         <RecyclerListView
                             dataProvider={dataProvider}
                             layoutProvider={this.layoutProvider}
                             rowRenderer={this.rowRenderer}
+                            extendedState={{ isPlaying }}
                             scrollViewProps={{
                                 showsVerticalScrollIndicator: false
                             }}

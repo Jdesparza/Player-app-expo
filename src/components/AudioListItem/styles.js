@@ -6,12 +6,12 @@ const { width, height } = Dimensions.get('window')
 const Height_Card = 55
 
 const styles = StyleSheet.create({
-    container: (isActivePlay) => ({
+    container: (activeListItem, isPlaying) => ({
         flexDirection: 'row',
         alignSelf: 'center',
         width: width - 20,
         height: Height_Card,
-        backgroundColor: isActivePlay ? COLOR_PRIMARY : COLOR_QUATERNARY,
+        backgroundColor: activeListItem ? COLOR_PRIMARY : COLOR_QUATERNARY,
         borderRadius: Height_Card,
         overflow: 'hidden',
         elevation: 3,
@@ -22,21 +22,25 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flex: 1
     },
-    imgCont: {},
-    imgAudio: {
+    imgCont: {
         width: Height_Card,
+        height: Height_Card,
+    },
+    imgAudio: {
+        width: '100%',
         height: '100%',
         borderRadius: Height_Card,
         resizeMode: 'cover'
     },
-    imgAudioPlay: (isActivePlay) => ({
+    imgAudioPlay: (isPlaying) => ({
         position: 'absolute',
         top: 0,
         left: 0,
         right: 0,
         bottom: 0,
-        zIndex: 1,
-        opacity: isActivePlay ? 1 : 0
+        zIndex: 1000,
+        opacity: isPlaying ? 1 : .9,
+        backgroundColor: isPlaying ? 'rgba(0, 0, 0, .1)' : 'rgba(0, 0, 0, .5)'
     }),
     infoAudio: {
         flex: 1,
@@ -45,8 +49,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 6.5
     },
-    filenameAudio: (isActivePlay) => ({
-        color: isActivePlay ? 'white' : COLOR_PRIMARY,
+    filenameAudio: (activeListItem, isPlaying) => ({
+        color: activeListItem ? 'white' : COLOR_PRIMARY,
         fontSize: 15.5,
         fontWeight: '500'
     }),
