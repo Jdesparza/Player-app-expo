@@ -5,11 +5,11 @@ import { BlurView } from 'expo-blur';
 import styles from './styles';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const imageUri = require('../../../assets/images/gamma_6_-cR_HgXp3k-transformed.png')
+const imageUri = require('../../../assets/images/umbrella-nightcore.jpg')
 
-const BackgroundImgPlayerBlur = () => {
+const BackgroundImgPlayerBlur = ({ otherStyle }) => {
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, otherStyle]}>
             <Image style={styles.image} source={imageUri} blurRadius={0} />
             <View style={styles.boxCont}>
                 <View style={styles.boxWithShadow} />

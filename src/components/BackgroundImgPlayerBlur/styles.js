@@ -5,21 +5,23 @@ const { width, height } = Dimensions.get('window')
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
+        padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        bottom: 65,
-    },
-    blurContainer: {
-        position: 'absolute',
-        // top: 0,
+        // position: 'absolute',
+        // top: -25,
         // left: 0,
-        // bottom: 0,
         // right: 0,
-        width: width - 25,
-        height: width - 25,
-        borderRadius: width - 25,
-        zIndex: 0
+        // bottom: 15, //65
+        // backgroundColor: 'green',
+    },
+    image: {
+        width: width - 40,
+        height: width - 40,
+        borderRadius: width - 40,
+        resizeMode: 'cover',
+        zIndex: 2
     },
     boxCont: {
         width: width - 20,
@@ -30,13 +32,6 @@ const styles = StyleSheet.create({
         padding: 7,
         zIndex: 1,
         position: 'absolute'
-    },
-    image: {
-        width: width - 40,
-        height: width - 40,
-        borderRadius: width - 40,
-        resizeMode: 'cover',
-        zIndex: 2
     },
     boxWithShadow: {
         width: '100%',
@@ -51,7 +46,18 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.46,
         shadowRadius: 11.14,
         elevation: 14,
-    }
+    },
+    blurContainer: {
+        position: 'absolute',
+        // top: 0,
+        // left: 0,
+        // bottom: 0,
+        // right: 0,
+        width: width - 25,
+        height: width - 25,
+        borderRadius: width - 25,
+        zIndex: 0
+    },
 })
 
 export default styles;

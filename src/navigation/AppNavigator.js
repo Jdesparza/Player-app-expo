@@ -21,7 +21,8 @@ const AppNavigator = () => {
             <Tab.Screen name='Player' component={Player} options={{
                 tabBarIcon: ({ color, size }) => (
                     <Ionicons name="musical-notes" size={size} color={color} />
-                )
+                ),
+                headerShown: false
             }} />
             <Tab.Screen name='PlayList' component={PlayList} options={{
                 tabBarIcon: ({ color, size }) => (
