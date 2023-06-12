@@ -7,12 +7,15 @@ const { width, height } = Dimensions.get('window')
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        marginTop: StatusBar.currentHeight,
+        // backgroundColor: 'red'
         // justifyContent: 'center',
         // alignItems: 'center'
     },
     audioCont: {
         textAlign: 'right',
-        padding: 15,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
         justifyContent: 'center',
         color: color.FONT_LIGHT,
         // backgroundColor: 'yellow',

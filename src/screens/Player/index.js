@@ -1,5 +1,5 @@
 import react, { useContext, useState, useEffect } from "react";
-import { Image, Text, View, Button } from "react-native";
+import { Image, Text, View, Button, SafeAreaView } from "react-native";
 import BackgroundImgPlayerBlur from "../../components/BackgroundImgPlayerBlur";
 import styles from "./styles";
 
@@ -148,12 +148,9 @@ const Player = () => {
 
     if (!context.currentAudio) return null
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <Text style={styles.audioCont}>{`${context.currentAudioIndex + 1} / ${context.totalAudioCount}`}</Text>
-            <BackgroundImgPlayerBlur otherStyle={{
-                opacity: context.isPlaying ? 1 : 0.8,
-                transform: [{ scale: context.isPlaying ? 1 : .8 }]
-            }} />
+            <BackgroundImgPlayerBlur isPlayPause={context.isPlaying} />
             <View style={styles.audioPlayerCont}>
                 <Text style={styles.audioTitle} numberOfLines={1}>{getFilename(context.currentAudio.filename)}</Text>
                 <Slider
@@ -171,7 +168,7 @@ const Player = () => {
                     <PlayerButtton iconType={'next'} size={27} onPressButton={handleNext} />
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 

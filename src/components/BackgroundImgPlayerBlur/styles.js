@@ -4,18 +4,20 @@ import { COLOR_PRIMARY, COLOR_QUATERNARY, COLOR_SECONDARY, COLOR_TERTIARY } from
 const { width, height } = Dimensions.get('window')
 
 const styles = StyleSheet.create({
-    container: {
+    container: (isPlayPause) => ({
         // flex: 1,
         padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        // position: 'absolute',
-        // top: -25,
-        // left: 0,
-        // right: 0,
-        // bottom: 15, //65
         // backgroundColor: 'green',
-    },
+        // opacity: isPlayPause ? 1 : 0.8,
+        // transform: [{ scale: isPlayPause ? 1 : .8 }],
+        position: 'absolute',
+        top: 45,
+        left: 0,
+        right: 0,
+        zIndex: 10
+    }),
     image: {
         width: width - 40,
         height: width - 40,
