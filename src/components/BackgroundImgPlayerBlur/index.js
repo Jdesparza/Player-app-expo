@@ -1,18 +1,21 @@
 import { View, Text, Image, Platform, Animated, Easing } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 
 import { BlurView } from 'expo-blur';
 import styles from './styles';
 import { LinearGradient } from 'expo-linear-gradient';
+import { AudioContext } from '../../context/AudioProvider';
 
 const imageUri = require('../../../assets/images/umbrella-nightcore.jpg')
 
 const BackgroundImgPlayerBlur = ({ isPlayPause }) => {
+
     const [isAnimating, setIsAnimating] = useState(false);
     const [isStopAnim, setIsStopAnim] = useState(false)
-    const rotationValue = useRef(new Animated.Value(isPlayPause ? 1 : 0)).current;
-    const isOpacityAnimation = useRef(new Animated.Value(isPlayPause ? 1 : 0.7)).current
-    const isScaleAnimation = useRef(new Animated.Value(isPlayPause ? 1 : 0.8)).current
+
+    const rotationValue = useRef(new Animated.Value(0)).current;
+    const isOpacityAnimation = useRef(new Animated.Value(0.7)).current
+    const isScaleAnimation = useRef(new Animated.Value(0.8)).current
 
     useEffect(() => {
         let rotationAnimation;
@@ -30,7 +33,9 @@ const BackgroundImgPlayerBlur = ({ isPlayPause }) => {
 
         if (rotationAnimation && !isStopAnim) {
             setIsAnimating(true);
-            Animated.loop(rotationAnimation).start()
+            Animated.loop(rotationAnimation).start(
+                console.log('anim')
+            )
         } else {
             if (isAnimating) {
                 AnimRotate(0, 3500, Easing.in(Easing.bounce)).start(({ finished }) => {

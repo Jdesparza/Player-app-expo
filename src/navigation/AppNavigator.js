@@ -13,11 +13,11 @@ const Tab = createBottomTabNavigator()
 const AppNavigator = () => {
     return (
         <Tab.Navigator>
-            {/* <Tab.Screen name='ListMusic' component={ListMusic} options={{
+            <Tab.Screen name='ListMusic' component={ListMusic} options={{
                 tabBarIcon: ({ color, size }) => (
                     <Ionicons name="headset" size={size} color={color} />
                 )
-            }} /> */}
+            }} />
             <Tab.Screen name='Player' component={Player} options={{
                 tabBarIcon: ({ color, size }) => (
                     <Ionicons name="musical-notes" size={size} color={color} />
