@@ -9,30 +9,37 @@ const imageUri = require('../../../assets/images/umbrella-nightcore.jpg')
 
 const BackgroundImgPlayerBlur = ({ isPlayPause }) => {
     const [isAnimating, setIsAnimating] = useState(false);
+    const [isStopAnim, setIsStopAnim] = useState(false)
     const rotationValue = useRef(new Animated.Value(isPlayPause ? 1 : 0)).current;
     const isOpacityAnimation = useRef(new Animated.Value(isPlayPause ? 1 : 0.7)).current
     const isScaleAnimation = useRef(new Animated.Value(isPlayPause ? 1 : 0.8)).current
 
     useEffect(() => {
         let rotationAnimation;
-        let opacityAnimation;
 
-        if (isPlayPause) {
+        if (!isAnimating) setIsStopAnim(false)
+
+        if (isPlayPause && !isStopAnim) {
             rotationAnimation = AnimRotate(1, 10000, Easing.linear)
             AnimOpacity(1, 1000)
             AnimScale(1, 1000)
         } else {
-            AnimOpacity(0.7, 500)
-            AnimScale(0.8, 500)
+            AnimOpacity(0.7, 3500)
+            AnimScale(0.8, 3500)
         }
 
-        if (rotationAnimation) {
+        if (rotationAnimation && !isStopAnim) {
             setIsAnimating(true);
-            Animated.loop(rotationAnimation).start();
+            Animated.loop(rotationAnimation).start()
         } else {
             if (isAnimating) {
-                AnimRotate(0, 5000, Easing.in(Easing.bounce)).start(() => {
-                    setIsAnimating(false);
+                AnimRotate(0, 3500, Easing.in(Easing.bounce)).start(({ finished }) => {
+                    setIsStopAnim(true)
+                    if (finished) {
+                        setIsAnimating(false);
+                        setIsStopAnim(false)
+                        console.log('animation ended!')
+                    }
                 })
             }
         }
@@ -42,7 +49,8 @@ const BackgroundImgPlayerBlur = ({ isPlayPause }) => {
             isOpacityAnimation.stopAnimation();
             isScaleAnimation.stopAnimation();
         };
-    }, [isPlayPause]);
+    }, [isPlayPause, isStopAnim]);
+
 
     const AnimRotate = (value, duration, easing) => {
         return Animated.timing(rotationValue, {
