@@ -14,6 +14,7 @@ import BackgroundImageColors from "../../components/BackgroundImageColors";
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import color from "../../misc/color";
 import OptionsModal from "../../components/OptionsModal";
+import BackgroundImageFilter from "../../components/BackgroundImageFilter";
 
 const getFilename = (filename) => {
     if (filename !== undefined) {
@@ -171,6 +172,9 @@ const Player = () => {
             {context.backgroundImg === 'BackImgColors' && (
                 <BackgroundImageColors />
             )}
+            {context.backgroundImg === 'BackImgFilter' && (
+                <BackgroundImageFilter />
+            )}
             <View style={styles.audioPlayerCont}>
                 <Text style={[styles.audioTitle, { color: context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY }]} numberOfLines={1}>{getFilename(context.currentAudio.filename)}</Text>
                 <Slider
@@ -200,6 +204,11 @@ const Player = () => {
                 onBackImgColorsPress={() => {
                     context.updateState(context, { backgroundImg: 'BackImgColors' })
                     storeThemeBackgroundImgPlayer('BackImgColors')
+                    setOptionModalVisible(false)
+                }}
+                onBackImgFilterPress={() => {
+                    context.updateState(context, { backgroundImg: 'BackImgFilter' })
+                    storeThemeBackgroundImgPlayer('BackImgFilter')
                     setOptionModalVisible(false)
                 }}
             />

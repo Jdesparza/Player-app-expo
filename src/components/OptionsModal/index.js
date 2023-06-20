@@ -1,10 +1,14 @@
 import { View, Text, Modal, StatusBar, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import styles from './styles'
+import { AudioContext } from '../../context/AudioProvider'
 
-const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayListPress, onBackImgBlurPress, onBackImgColorsPress }) => {
+const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayListPress,
+    onBackImgBlurPress, onBackImgColorsPress, onBackImgFilterPress
+}) => {
 
     const { filename } = currentItem
+    const { backgroundImg } = useContext(AudioContext)
 
     return (
         <>
@@ -17,10 +21,13 @@ const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayL
                             <Text style={styles.BackImgTitle}>Theme Image</Text>
                             <View style={styles.BackImgTouch}>
                                 <TouchableOpacity onPress={onBackImgBlurPress}>
-                                    <Text style={styles.option}>Img Blur Circle</Text>
+                                    <Text style={[styles.option, styles.optionTheme(backgroundImg, theme = 'BackImgBlur')]}>Blur</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity onPress={onBackImgColorsPress}>
-                                    <Text style={styles.option}>Img Gradient Colors</Text>
+                                    <Text style={[styles.option, styles.optionTheme(backgroundImg, theme = 'BackImgColors')]}>Gradient</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={onBackImgFilterPress}>
+                                    <Text style={[styles.option, styles.optionTheme(backgroundImg, theme = 'BackImgFilter')]}>Filter Gray</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
