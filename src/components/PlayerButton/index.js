@@ -1,12 +1,12 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { AntDesign } from '@expo/vector-icons'
-import { COLOR_PRIMARY } from '../../utils/paleta'
+import { COLOR_PRIMARY, COLOR_QUATERNARY } from '../../utils/paleta'
 import styles from './styles'
 
 const PlayerButtton = (props) => {
 
-    const { iconType, size, color: iconColor = COLOR_PRIMARY, onPressButton } = props
+    const { iconType, size, isColor, onPressButton } = props
 
     const getIconName = (type) => {
         switch (type) {
@@ -23,7 +23,7 @@ const PlayerButtton = (props) => {
 
     return (
         <TouchableOpacity style={styles.iconStyle} onPress={onPressButton} >
-            <AntDesign name={getIconName(iconType)} size={size} color={iconColor} />
+            <AntDesign name={getIconName(iconType)} size={size} color={isColor === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY} />
         </TouchableOpacity>
     )
 }

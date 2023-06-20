@@ -31,7 +31,8 @@ export class AudioProvider extends Component {
             isPlaying: false,
             currentAudioIndex: null,
             playbackPosition: null,
-            playbackDuration: null
+            playbackDuration: null,
+            backgroundImg: 'BackImgBlur'
         }
         this.totalAudioCount = 0
     }
@@ -82,6 +83,20 @@ export class AudioProvider extends Component {
         }
 
         this.setState({ ...this.state, currentAudio, currentAudioIndex })
+    }
+
+    loadPreviousTheme = async () => {
+        // TODO: we need to load audio from our async storage
+        let previousTheme = await AsyncStorage.getItem('previousTheme')
+        let backgroundImg
+
+        if (previousTheme === null) {
+            backgroundImg = 'BackImgBlur'
+        } else {
+            backgroundImg = JSON.parse(previousTheme).theme
+        }
+
+        this.setState({ ...this.state, backgroundImg })
     }
 
     getPermission = async () => {
@@ -157,7 +172,7 @@ export class AudioProvider extends Component {
 
     render() {
         const { dataProvider, audioFiles, permissionError, playbackObj, soundObj, currentAudio, isPlaying,
-            currentAudioIndex, playbackPosition, playbackDuration } = this.state
+            currentAudioIndex, playbackPosition, playbackDuration, backgroundImg } = this.state
 
         if (permissionError) return <View style={{
             flex: 1,
@@ -169,7 +184,7 @@ export class AudioProvider extends Component {
         return <AudioContext.Provider value={{
             audioFiles, dataProvider, playbackObj, soundObj, currentAudio, updateState: this.updateState,
             isPlaying, currentAudioIndex, playbackPosition, playbackDuration, totalAudioCount: this.totalAudioCount,
-            loadPreviousAudio: this.loadPreviousAudio, onPlaybackStatusUpdate: this.onPlaybackStatusUpdate
+            loadPreviousAudio: this.loadPreviousAudio, onPlaybackStatusUpdate: this.onPlaybackStatusUpdate, backgroundImg, loadPreviousTheme: this.loadPreviousTheme
         }} >
             {this.props.children}
         </AudioContext.Provider>

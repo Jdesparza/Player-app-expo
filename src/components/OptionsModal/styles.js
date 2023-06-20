@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         zIndex: 1
     },
     title: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: '600',
         padding: 20,
         paddingBottom: 0,
@@ -27,12 +27,30 @@ const styles = StyleSheet.create({
     optionCont: {
         padding: 20,
     },
+    BackContainerImg: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#e2e2e2'
+    },
+    BackImgTitle: {
+        fontSize: 18,
+        fontWeight: '500',
+        color: color.FONT,
+        paddingVertical: 10,
+        letterSpacing: 1,
+    },
+    BackImgTouch: {
+        paddingHorizontal: 7,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
     option: {
         fontSize: 16,
         fontWeight: '500',
         color: color.FONT,
         paddingVertical: 10,
-        letterSpacing: 1
+        letterSpacing: 1,
+        // backgroundColor: 'green'
     },
     modalBG: {
         position: 'absolute',

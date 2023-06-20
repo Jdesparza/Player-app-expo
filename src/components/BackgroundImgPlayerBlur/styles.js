@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
         top: 45,
         left: 0,
         right: 0,
-        zIndex: 10
+        zIndex: 0
     }),
     image: {
         width: width - 40,

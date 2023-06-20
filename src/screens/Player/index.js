@@ -1,14 +1,19 @@
-import react, { useContext, useState, useEffect } from "react";
-import { Image, Text, View, Button, SafeAreaView } from "react-native";
+import React, { useContext, useState, useEffect } from "react";
+import { Image, Text, View, Button, SafeAreaView, TouchableOpacity } from "react-native";
 import BackgroundImgPlayerBlur from "../../components/BackgroundImgPlayerBlur";
 import styles from "./styles";
 
 import Slider from '@react-native-community/slider';
-import { COLOR_PRIMARY } from "../../utils/paleta";
+import { COLOR_PRIMARY, COLOR_QUATERNARY } from "../../utils/paleta";
 import PlayerButtton from "../../components/PlayerButton";
 import { AudioContext } from "../../context/AudioProvider";
 import { pause, play, playNext, resume } from "../../misc/audioController";
-import { storeAudioForNextOpening } from "../../misc/helper";
+import { storeAudioForNextOpening, storeThemeBackgroundImgPlayer } from "../../misc/helper";
+import BackgroundImageColors from "../../components/BackgroundImageColors";
+
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import color from "../../misc/color";
+import OptionsModal from "../../components/OptionsModal";
 
 const getFilename = (filename) => {
     if (filename !== undefined) {
@@ -26,6 +31,8 @@ const getFilename = (filename) => {
 const Player = () => {
 
     const context = useContext(AudioContext)
+
+    const [optionModalVisible, setOptionModalVisible] = useState(false)
 
     const { playbackPosition, playbackDuration } = context
 
@@ -143,32 +150,60 @@ const Player = () => {
 
     useEffect(() => {
         context.loadPreviousAudio()
+        context.loadPreviousTheme()
     }, [])
 
 
     if (!context.currentAudio) return null
     return (
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.audioCont}>{`${context.currentAudioIndex + 1} / ${context.totalAudioCount}`}</Text>
-            <BackgroundImgPlayerBlur isPlayPause={context.isPlaying} />
+        <View style={styles.container}>
+            {/* <Text style={styles.audioCont}>{`${context.currentAudioIndex + 1} / ${context.totalAudioCount}`}</Text> */}
+            <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end', zIndex: 1 }}>
+                <TouchableOpacity style={styles.dotsTouchCont} onPress={() => {
+                    setOptionModalVisible(true)
+                }}>
+                    <MaterialCommunityIcons name="dots-horizontal" size={25} color={context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY} />
+                </TouchableOpacity>
+            </View>
+            {context.backgroundImg === 'BackImgBlur' && (
+                <BackgroundImgPlayerBlur isPlayPause={context.isPlaying} isVisible={context.backgroundImg} />
+            )}
+            {context.backgroundImg === 'BackImgColors' && (
+                <BackgroundImageColors />
+            )}
             <View style={styles.audioPlayerCont}>
-                <Text style={styles.audioTitle} numberOfLines={1}>{getFilename(context.currentAudio.filename)}</Text>
+                <Text style={[styles.audioTitle, { color: context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY }]} numberOfLines={1}>{getFilename(context.currentAudio.filename)}</Text>
                 <Slider
                     style={styles.slider}
                     minimumValue={0}
                     maximumValue={1}
                     value={calculateSeebBar()}
-                    minimumTrackTintColor={'rgba(56, 77, 94, .8)'}
-                    maximumTrackTintColor={'rgba(56, 77, 94, 1)'}
-                    thumbTintColor={COLOR_PRIMARY}
+                    minimumTrackTintColor={context.backgroundImg === 'BackImgBlur' ? 'rgba(56, 77, 94, .8)' : COLOR_QUATERNARY}
+                    maximumTrackTintColor={context.backgroundImg === 'BackImgBlur' ? 'rgba(56, 77, 94, 1)' : COLOR_QUATERNARY}
+                    thumbTintColor={context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY}
                 />
                 <View style={styles.audioControllers}>
-                    <PlayerButtton iconType={'prev'} size={27} onPressButton={handlePrevious} />
-                    <PlayerButtton iconType={context.isPlaying ? 'play' : 'pause'} size={50} onPressButton={handlePlayPause} />
-                    <PlayerButtton iconType={'next'} size={27} onPressButton={handleNext} />
+                    <PlayerButtton iconType={'prev'} size={27} onPressButton={handlePrevious} isColor={context.backgroundImg} />
+                    <PlayerButtton iconType={context.isPlaying ? 'play' : 'pause'} size={50} onPressButton={handlePlayPause} isColor={context.backgroundImg} />
+                    <PlayerButtton iconType={'next'} size={27} onPressButton={handleNext} isColor={context.backgroundImg} />
                 </View>
             </View>
-        </SafeAreaView>
+            <OptionsModal
+                visible={optionModalVisible}
+                onCloseModal={() => { setOptionModalVisible(false) }}
+                currentItem={context.currentAudio}
+                onBackImgBlurPress={() => {
+                    context.updateState(context, { backgroundImg: 'BackImgBlur' })
+                    storeThemeBackgroundImgPlayer('BackImgBlur')
+                    setOptionModalVisible(false)
+                }}
+                onBackImgColorsPress={() => {
+                    context.updateState(context, { backgroundImg: 'BackImgColors' })
+                    storeThemeBackgroundImgPlayer('BackImgColors')
+                    setOptionModalVisible(false)
+                }}
+            />
+        </View>
     );
 }
 

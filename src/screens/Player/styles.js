@@ -7,7 +7,7 @@ const { width, height } = Dimensions.get('window')
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: StatusBar.currentHeight,
+        // marginTop: StatusBar.currentHeight,
         // backgroundColor: 'red'
         // justifyContent: 'center',
         // alignItems: 'center'
@@ -20,6 +20,16 @@ const styles = StyleSheet.create({
         color: color.FONT_LIGHT,
         // backgroundColor: 'yellow',
         zIndex: 1,
+    },
+    dotsTouchCont: {
+        // alignItems: 'flex-end',
+        paddingHorizontal: 5,
+        paddingVertical: 5,
+        marginHorizontal: 10,
+        marginVertical: 5,
+        // backgroundColor: 'yellow',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     audioPlayerCont: {
         // flex: 1,
@@ -35,7 +45,6 @@ const styles = StyleSheet.create({
     },
     audioTitle: {
         fontSize: 16,
-        color: COLOR_PRIMARY,
         padding: 15
     },
     slider: {
@@ -47,9 +56,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         alignItems: 'center',
         // backgroundColor: '#9cff9c',
-        paddingHorizontal: 10,
-        paddingBottom: 15,
-        paddingTop: 10,
+        padding: 10,
         zIndex: 1
     }
 })

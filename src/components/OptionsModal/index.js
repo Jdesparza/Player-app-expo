@@ -2,7 +2,7 @@ import { View, Text, Modal, StatusBar, TouchableWithoutFeedback, TouchableOpacit
 import React from 'react'
 import styles from './styles'
 
-const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayListPress }) => {
+const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayListPress, onBackImgBlurPress, onBackImgColorsPress }) => {
 
     const { filename } = currentItem
 
@@ -13,6 +13,17 @@ const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayL
                 <View style={styles.modal}>
                     <Text numberOfLines={2} style={styles.title}>{filename}</Text>
                     <View style={styles.optionCont}>
+                        <View style={styles.BackContainerImg}>
+                            <Text style={styles.BackImgTitle}>Theme Image</Text>
+                            <View style={styles.BackImgTouch}>
+                                <TouchableOpacity onPress={onBackImgBlurPress}>
+                                    <Text style={styles.option}>Img Blur Circle</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={onBackImgColorsPress}>
+                                    <Text style={styles.option}>Img Gradient Colors</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                         <TouchableOpacity onPress={onPlayPress}>
                             <Text style={styles.option}>Play</Text>
                         </TouchableOpacity>

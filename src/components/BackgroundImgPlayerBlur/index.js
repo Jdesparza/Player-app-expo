@@ -8,7 +8,7 @@ import { AudioContext } from '../../context/AudioProvider';
 
 const imageUri = require('../../../assets/images/umbrella-nightcore.jpg')
 
-const BackgroundImgPlayerBlur = ({ isPlayPause }) => {
+const BackgroundImgPlayerBlur = ({ isPlayPause, isVisible }) => {
 
     const [isAnimating, setIsAnimating] = useState(false);
     const [isStopAnim, setIsStopAnim] = useState(false)
@@ -18,43 +18,45 @@ const BackgroundImgPlayerBlur = ({ isPlayPause }) => {
     const isScaleAnimation = useRef(new Animated.Value(0.8)).current
 
     useEffect(() => {
-        let rotationAnimation;
+        if (isVisible === 'BackImgBlur') {
+            let rotationAnimation;
 
-        if (!isAnimating) setIsStopAnim(false)
+            if (!isAnimating) setIsStopAnim(false)
 
-        if (isPlayPause && !isStopAnim) {
-            rotationAnimation = AnimRotate(1, 10000, Easing.linear)
-            AnimOpacity(1, 1000)
-            AnimScale(1, 1000)
-        } else {
-            AnimOpacity(0.7, 3500)
-            AnimScale(0.8, 3500)
-        }
-
-        if (rotationAnimation && !isStopAnim) {
-            setIsAnimating(true);
-            Animated.loop(rotationAnimation).start(
-                console.log('anim')
-            )
-        } else {
-            if (isAnimating) {
-                AnimRotate(0, 3500, Easing.in(Easing.bounce)).start(({ finished }) => {
-                    setIsStopAnim(true)
-                    if (finished) {
-                        setIsAnimating(false);
-                        setIsStopAnim(false)
-                        console.log('animation ended!')
-                    }
-                })
+            if (isPlayPause && !isStopAnim) {
+                rotationAnimation = AnimRotate(1, 10000, Easing.linear)
+                AnimOpacity(1, 1000)
+                AnimScale(1, 1000)
+            } else {
+                AnimOpacity(0.7, 3500)
+                AnimScale(0.8, 3500)
             }
-        }
 
-        return () => {
-            rotationValue.stopAnimation();
-            isOpacityAnimation.stopAnimation();
-            isScaleAnimation.stopAnimation();
-        };
-    }, [isPlayPause, isStopAnim]);
+            if (rotationAnimation && !isStopAnim) {
+                setIsAnimating(true);
+                Animated.loop(rotationAnimation).start(
+                    console.log('anim')
+                )
+            } else {
+                if (isAnimating) {
+                    AnimRotate(0, 3500, Easing.in(Easing.bounce)).start(({ finished }) => {
+                        setIsStopAnim(true)
+                        if (finished) {
+                            setIsAnimating(false);
+                            setIsStopAnim(false)
+                            console.log('animation ended!')
+                        }
+                    })
+                }
+            }
+
+            return () => {
+                rotationValue.stopAnimation();
+                isOpacityAnimation.stopAnimation();
+                isScaleAnimation.stopAnimation();
+            };
+        }
+    }, [isPlayPause, isStopAnim, isVisible]);
 
 
     const AnimRotate = (value, duration, easing) => {
