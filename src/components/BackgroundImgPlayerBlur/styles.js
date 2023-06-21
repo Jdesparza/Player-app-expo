@@ -1,5 +1,6 @@
 import { StyleSheet, StatusBar, Platform, Dimensions } from 'react-native';
-import { COLOR_PRIMARY, COLOR_QUATERNARY, COLOR_SECONDARY, COLOR_TERTIARY } from '../../utils/paleta';
+import { COLOR_PRIMARY, COLOR_QUATERNARY, COLOR_QUINARY, COLOR_SECONDARY, COLOR_TERTIARY } from '../../utils/paleta';
+import color from '../../misc/color';
 
 const { width, height } = Dimensions.get('window')
 
@@ -13,7 +14,7 @@ const styles = StyleSheet.create({
         // opacity: isPlayPause ? 1 : 0.8,
         // transform: [{ scale: isPlayPause ? 1 : .8 }],
         position: 'absolute',
-        top: 45,
+        top: (height - width - 15) / 4,
         left: 0,
         right: 0,
         zIndex: 0
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
         height: '100%',
         bottom: 3,
         borderRadius: width - 20,
-        shadowColor: 'rgba(92, 29, 209, .9)', //rgba(255, 255, 255, .7)  rgba(92, 29, 209, 1)
+        shadowColor: COLOR_QUINARY, //rgba(255, 255, 255, .7)  rgba(92, 29, 209, 1) rgba(92, 29, 209, .9)
         shadowOffset: {
             width: 0,
             height: 8,

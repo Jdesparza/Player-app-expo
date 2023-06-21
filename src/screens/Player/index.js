@@ -196,21 +196,6 @@ const Player = () => {
                 visible={optionModalVisible}
                 onCloseModal={() => { setOptionModalVisible(false) }}
                 currentItem={context.currentAudio}
-                onBackImgBlurPress={() => {
-                    context.updateState(context, { backgroundImg: 'BackImgBlur' })
-                    storeThemeBackgroundImgPlayer('BackImgBlur')
-                    setOptionModalVisible(false)
-                }}
-                onBackImgColorsPress={() => {
-                    context.updateState(context, { backgroundImg: 'BackImgColors' })
-                    storeThemeBackgroundImgPlayer('BackImgColors')
-                    setOptionModalVisible(false)
-                }}
-                onBackImgFilterPress={() => {
-                    context.updateState(context, { backgroundImg: 'BackImgFilter' })
-                    storeThemeBackgroundImgPlayer('BackImgFilter')
-                    setOptionModalVisible(false)
-                }}
             />
         </View>
     );

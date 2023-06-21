@@ -2,13 +2,13 @@ import { View, Text, Modal, StatusBar, TouchableWithoutFeedback, TouchableOpacit
 import React, { useContext } from 'react'
 import styles from './styles'
 import { AudioContext } from '../../context/AudioProvider'
+import { storeThemeBackgroundImgPlayer } from '../../misc/helper'
 
-const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayListPress,
-    onBackImgBlurPress, onBackImgColorsPress, onBackImgFilterPress
-}) => {
+const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayListPress }) => {
 
     const { filename } = currentItem
-    const { backgroundImg } = useContext(AudioContext)
+    const context = useContext(AudioContext)
+    const { backgroundImg } = context
 
     return (
         <>
@@ -20,13 +20,25 @@ const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayL
                         <View style={styles.BackContainerImg}>
                             <Text style={styles.BackImgTitle}>Theme Image</Text>
                             <View style={styles.BackImgTouch}>
-                                <TouchableOpacity onPress={onBackImgBlurPress}>
+                                <TouchableOpacity onPress={() => {
+                                    context.updateState(context, { backgroundImg: 'BackImgBlur' })
+                                    storeThemeBackgroundImgPlayer('BackImgBlur')
+                                    onCloseModal()
+                                }}>
                                     <Text style={[styles.option, styles.optionTheme(backgroundImg, theme = 'BackImgBlur')]}>Blur</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={onBackImgColorsPress}>
+                                <TouchableOpacity onPress={() => {
+                                    context.updateState(context, { backgroundImg: 'BackImgColors' })
+                                    storeThemeBackgroundImgPlayer('BackImgColors')
+                                    onCloseModal()
+                                }}>
                                     <Text style={[styles.option, styles.optionTheme(backgroundImg, theme = 'BackImgColors')]}>Gradient</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={onBackImgFilterPress}>
+                                <TouchableOpacity onPress={() => {
+                                    context.updateState(context, { backgroundImg: 'BackImgFilter' })
+                                    storeThemeBackgroundImgPlayer('BackImgFilter')
+                                    onCloseModal()
+                                }}>
                                     <Text style={[styles.option, styles.optionTheme(backgroundImg, theme = 'BackImgFilter')]}>Filter Gray</Text>
                                 </TouchableOpacity>
                             </View>

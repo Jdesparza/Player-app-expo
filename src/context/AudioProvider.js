@@ -23,6 +23,8 @@ export class AudioProvider extends Component {
         super(props)
         this.state = {
             audioFiles: [],
+            playList: [],
+            addToPlayList: null,
             permissionError: false,
             dataProvider: new DataProvider((r1, r2) => r1 !== r2),
             playbackObj: null,
@@ -32,7 +34,7 @@ export class AudioProvider extends Component {
             currentAudioIndex: null,
             playbackPosition: null,
             playbackDuration: null,
-            backgroundImg: 'BackImgBlur'
+            backgroundImg: null
         }
         this.totalAudioCount = 0
     }
@@ -171,7 +173,7 @@ export class AudioProvider extends Component {
     }
 
     render() {
-        const { dataProvider, audioFiles, permissionError, playbackObj, soundObj, currentAudio, isPlaying,
+        const { dataProvider, audioFiles, playList, addToPlayList, permissionError, playbackObj, soundObj, currentAudio, isPlaying,
             currentAudioIndex, playbackPosition, playbackDuration, backgroundImg } = this.state
 
         if (permissionError) return <View style={{
@@ -182,7 +184,7 @@ export class AudioProvider extends Component {
             <Text style={{ fontSize: 25, textAlign: 'center', color: COLOR_PRIMARY }}>It looks like you haven't accept the permission</Text>
         </View>
         return <AudioContext.Provider value={{
-            audioFiles, dataProvider, playbackObj, soundObj, currentAudio, updateState: this.updateState,
+            audioFiles, dataProvider, playList, addToPlayList, playbackObj, soundObj, currentAudio, updateState: this.updateState,
             isPlaying, currentAudioIndex, playbackPosition, playbackDuration, totalAudioCount: this.totalAudioCount,
             loadPreviousAudio: this.loadPreviousAudio, onPlaybackStatusUpdate: this.onPlaybackStatusUpdate, backgroundImg, loadPreviousTheme: this.loadPreviousTheme
         }} >

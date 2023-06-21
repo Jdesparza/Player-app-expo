@@ -9,13 +9,14 @@ const styles = StyleSheet.create({
     container: (activeListItem, isPlaying) => ({
         flexDirection: 'row',
         alignSelf: 'center',
-        width: width - 20,
+        // width: width - 20,
         height: Height_Card,
         backgroundColor: activeListItem ? COLOR_PRIMARY : COLOR_QUATERNARY,
         borderRadius: Height_Card,
         overflow: 'hidden',
         elevation: 3,
-        marginTop: 7,
+        marginVertical: 5,
+        marginHorizontal: 10
     }),
     leftCont: {
         flexDirection: 'row',

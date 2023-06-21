@@ -27,7 +27,7 @@ export class ListMusic extends Component {
         switch (type) {
             case 'audio':
                 dim.width = Dimensions.get('window').width
-                dim.height = 70
+                dim.height = 65
                 break
             default:
                 dim.width = 0
@@ -76,6 +76,7 @@ export class ListMusic extends Component {
 
     componentDidMount() {
         this.context.loadPreviousAudio()
+        this.context.loadPreviousTheme()
     }
 
     rowRenderer = (type, item, index, extendedState) => {
@@ -109,13 +110,20 @@ export class ListMusic extends Component {
                             scrollViewProps={{
                                 showsVerticalScrollIndicator: false
                             }}
+                            style={{ paddingTop: 5 }}
+                            renderFooter={() => <View style={{ paddingTop: 10 }} />}
                         />
                         <OptionsModal
                             visible={this.state.optionModalVisible}
                             onCloseModal={() => this.setState({ ...this.state, optionModalVisible: false })}
                             currentItem={this.currentItem}
                             onPlayPress={() => console.log('playing audio')}
-                            onPlayListPress={() => console.log('adding to the playlist')}
+                            onPlayListPress={() => {
+                                this.context.updateState(this.context, {
+                                    addToPlayList: this.currentItem,
+                                })
+                                this.props.navigation.navigate('PlayList')
+                            }}
                         />
                     </View>
                 )
