@@ -6,7 +6,7 @@ import { LayoutProvider, RecyclerListView } from 'recyclerlistview'
 import AudioListItem from '../../components/AudioListItem'
 import OptionsModal from '../../components/OptionsModal'
 import { Audio } from 'expo-av'
-import { pause, play, playNext, resume } from '../../misc/audioController'
+import { pause, play, playNext, resume, selectAudio } from '../../misc/audioController'
 import { storeAudioForNextOpening } from '../../misc/helper'
 
 export class ListMusic extends Component {
@@ -36,42 +36,7 @@ export class ListMusic extends Component {
     })
 
     handleAudioPress = async (item) => {
-
-        const { soundObj, playbackObj, currentAudio, updateState, audioFiles } = this.context
-
-        // playing audio for the first time
-        if (soundObj === null) {
-            const playbackObj = new Audio.Sound()
-            const status = await play(playbackObj, item.uri)
-            const index = audioFiles.indexOf(item)
-            // console.log(playbackObj)
-            updateState(this.context, { playbackObj: playbackObj, soundObj: status, currentAudio: item, isPlaying: true, currentAudioIndex: index })
-            playbackObj.setOnPlaybackStatusUpdate(this.context.onPlaybackStatusUpdate)
-            return storeAudioForNextOpening(item, index)
-        }
-
-        // pause audio
-        if (soundObj.isLoaded && soundObj.isPlaying &&
-            currentAudio.id === item.id) {
-            // audioController.pause()
-            const status = await pause(playbackObj)
-            return updateState(this.context, { soundObj: status, isPlaying: false })
-        }
-
-        // resume audio
-        if (soundObj.isLoaded && !soundObj.isPlaying &&
-            currentAudio.id === item.id) {
-            const status = await resume(playbackObj)
-            return updateState(this.context, { soundObj: status, isPlaying: true })
-        }
-
-        // select another audio
-        if (soundObj.isLoaded && currentAudio.id !== item.id) {
-            const status = await playNext(playbackObj, item.uri)
-            const index = audioFiles.indexOf(item)
-            updateState(this.context, { soundObj: status, currentAudio: item, isPlaying: true, currentAudioIndex: index })
-            return storeAudioForNextOpening(item, index)
-        }
+        await selectAudio(item, this.context)
     }
 
     componentDidMount() {

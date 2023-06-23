@@ -14,9 +14,10 @@ const styles = StyleSheet.create({
         // opacity: isPlayPause ? 1 : 0.8,
         // transform: [{ scale: isPlayPause ? 1 : .8 }],
         position: 'absolute',
-        top: (height - width - 15) / 4,
+        top: (height - width - 15 - 180 - 45 - 10) / 2.5,
         left: 0,
         right: 0,
+        bottom: 180,
         zIndex: 0
     }),
     image: {

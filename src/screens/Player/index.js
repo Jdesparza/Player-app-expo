@@ -7,8 +7,8 @@ import Slider from '@react-native-community/slider';
 import { COLOR_PRIMARY, COLOR_QUATERNARY } from "../../utils/paleta";
 import PlayerButtton from "../../components/PlayerButton";
 import { AudioContext } from "../../context/AudioProvider";
-import { pause, play, playNext, resume } from "../../misc/audioController";
-import { storeAudioForNextOpening, storeThemeBackgroundImgPlayer } from "../../misc/helper";
+import { changeAudio, moveAudio, pause, play, playNext, resume, selectAudio } from "../../misc/audioController";
+import { convertTime, storeAudioForNextOpening, storeThemeBackgroundImgPlayer } from "../../misc/helper";
 import BackgroundImageColors from "../../components/BackgroundImageColors";
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -34,6 +34,7 @@ const Player = () => {
     const context = useContext(AudioContext)
 
     const [optionModalVisible, setOptionModalVisible] = useState(false)
+    const [currentPosition, setCurrentPosition] = useState(0)
 
     const { playbackPosition, playbackDuration } = context
 
@@ -45,108 +46,19 @@ const Player = () => {
     }
 
     const handlePlayPause = async () => {
-        // Play
-        if (context.soundObj === null) {
-            const audio = context.currentAudio
-            const status = await play(context.playbackObj, audio.uri)
-            context.playbackObj.setOnPlaybackStatusUpdate(context.onPlaybackStatusUpdate)
-            return context.updateState(context, {
-                soundObj: status,
-                currentAudio: audio,
-                isPlaying: true,
-                currentAudioIndex: context.currentAudioIndex
-            })
-        }
-        // Pause
-        if (context.soundObj && context.soundObj.isPlaying) {
-            const status = await pause(context.playbackObj)
-            return context.updateState(context, {
-                soundObj: status,
-                isPlaying: false,
-            })
-        }
-        // Resume
-        if (context.soundObj && !context.soundObj.isPlaying) {
-            const status = await resume(context.playbackObj)
-            return context.updateState(context, {
-                soundObj: status,
-                isPlaying: true,
-            })
-        }
+        await selectAudio(context.currentAudio, context)
     }
 
     const handleNext = async () => {
-        const { isLoaded } = await context.playbackObj.getStatusAsync()
-        const isLastAudio = context.currentAudioIndex + 1 === context.totalAudioCount
-        let audio = context.audioFiles[context.currentAudioIndex + 1]
-        let index
-        let status
-
-        if (!isLoaded && !isLastAudio) {
-            index = context.currentAudioIndex + 1
-            status = await play(context.playbackObj, audio.uri)
-        }
-        if (isLoaded && !isLastAudio) {
-            index = context.currentAudioIndex + 1
-            status = await playNext(context.playbackObj, audio.uri)
-        }
-        if (isLastAudio) {
-            index = 0
-            audio = context.audioFiles[index]
-            if (isLoaded) {
-                status = await playNext(context.playbackObj, audio.uri)
-            } else {
-                status = await play(context.playbackObj, audio.uri)
-            }
-        }
-
-        context.updateState(context, {
-            playbackObj: context.playbackObj,
-            soundObj: status,
-            currentAudio: audio,
-            isPlaying: true,
-            currentAudioIndex: index,
-            playbackPosition: null,
-            playbackDuration: null
-        })
-        storeAudioForNextOpening(audio, index)
+        await changeAudio(context, 'next')
     }
 
     const handlePrevious = async () => {
-        const { isLoaded } = await context.playbackObj.getStatusAsync()
-        const isFirstAudio = context.currentAudioIndex <= 0
-        let audio = context.audioFiles[context.currentAudioIndex - 1]
-        let index
-        let status
+        await changeAudio(context, 'previous')
+    }
 
-        if (!isLoaded && !isFirstAudio) {
-            index = context.currentAudioIndex - 1
-            status = await play(context.playbackObj, audio.uri)
-        }
-        if (isLoaded && !isFirstAudio) {
-            index = context.currentAudioIndex - 1
-            status = await playNext(context.playbackObj, audio.uri)
-        }
-        if (isFirstAudio) {
-            index = context.totalAudioCount - 1
-            audio = context.audioFiles[index]
-            if (isLoaded) {
-                status = await playNext(context.playbackObj, audio.uri)
-            } else {
-                status = await play(context.playbackObj, audio.uri)
-            }
-        }
-
-        context.updateState(context, {
-            playbackObj: context.playbackObj,
-            soundObj: status,
-            currentAudio: audio,
-            isPlaying: true,
-            currentAudioIndex: index,
-            playbackPosition: null,
-            playbackDuration: null
-        })
-        storeAudioForNextOpening(audio, index)
+    const renderCurrentTime = () => {
+        return convertTime(playbackPosition / 1000)
     }
 
     useEffect(() => {
@@ -176,7 +88,9 @@ const Player = () => {
                 <BackgroundImageFilter />
             )}
             <View style={styles.audioPlayerCont}>
-                <Text style={[styles.audioTitle, { color: context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY }]} numberOfLines={1}>{getFilename(context.currentAudio.filename)}</Text>
+                <Text style={[styles.audioTitle, { color: context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY }]} numberOfLines={1}>
+                    {getFilename(context.currentAudio.filename)}
+                </Text>
                 <Slider
                     style={styles.slider}
                     minimumValue={0}
@@ -185,7 +99,33 @@ const Player = () => {
                     minimumTrackTintColor={context.backgroundImg === 'BackImgBlur' ? 'rgba(56, 77, 94, .8)' : COLOR_QUATERNARY}
                     maximumTrackTintColor={context.backgroundImg === 'BackImgBlur' ? 'rgba(56, 77, 94, 1)' : COLOR_QUATERNARY}
                     thumbTintColor={context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY}
+                    onValueChange={(value) => {
+                        setCurrentPosition(convertTime(value * (playbackDuration / 1000)))
+                    }}
+                    onSlidingStart={async () => {
+                        if (!context.isPlaying) return;
+
+                        try {
+                            await pause(context.playbackObj)
+                        } catch (error) {
+                            console.log('error inside onSlidingStart callback', error)
+                        }
+                    }}
+                    onSlidingComplete={async value => {
+                        await moveAudio(context, value)
+                        setTimeout(() => {
+                            setCurrentPosition(0)
+                        }, 1);
+                    }}
                 />
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={[styles.audioTime, { color: context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY }]}>
+                        {currentPosition ? currentPosition : renderCurrentTime()}
+                    </Text>
+                    <Text style={[styles.audioTime, { color: context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY }]}>
+                        {convertTime(playbackDuration / 1000)}
+                    </Text>
+                </View>
                 <View style={styles.audioControllers}>
                     <PlayerButtton iconType={'prev'} size={27} onPressButton={handlePrevious} isColor={context.backgroundImg} />
                     <PlayerButtton iconType={context.isPlaying ? 'play' : 'pause'} size={50} onPressButton={handlePlayPause} isColor={context.backgroundImg} />

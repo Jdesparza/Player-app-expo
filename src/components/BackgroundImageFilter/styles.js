@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
         // overflow: 'hidden',
         padding: 15,
         position: 'absolute',
-        top: (height - width - 15) / 4
+        top: (height - width - 15 - 180) / 2.5
     },
     image: {
         resizeMode: 'cover',

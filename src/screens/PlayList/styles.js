@@ -14,7 +14,8 @@ const styles = StyleSheet.create({
         padding: 10,
         marginVertical: 5,
         backgroundColor: COLOR_QUATERNARY,
-        borderRadius: 5
+        borderRadius: 5,
+        elevation: 1.5
     },
     titleList: {
         fontSize: 16,

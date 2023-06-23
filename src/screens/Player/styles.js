@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     audioPlayerCont: {
         // flex: 1,
         width,
-        // height: 170,
+        // height: 180,
         position: 'absolute',
         bottom: 0,
         left: 0,
@@ -46,11 +46,20 @@ const styles = StyleSheet.create({
     },
     audioTitle: {
         fontSize: 16,
-        padding: 15
+        padding: 15,
+        // backgroundColor: 'blue'
     },
     slider: {
         width: width,
         height: 30,
+        // backgroundColor: 'red'
+    },
+    audioTime: {
+        fontSize: 14,
+        paddingHorizontal: 15,
+        paddingBottom: 5,
+        marginTop: -7,
+        // backgroundColor: '#ff00d4'
     },
     audioControllers: {
         flexDirection: 'row',
