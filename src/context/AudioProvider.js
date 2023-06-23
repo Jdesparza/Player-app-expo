@@ -31,6 +31,8 @@ export class AudioProvider extends Component {
             soundObj: null,
             currentAudio: {},
             isPlaying: false,
+            isPlayListRunning: false,
+            activePlayList: [],
             currentAudioIndex: null,
             playbackPosition: null,
             playbackDuration: null,
@@ -74,17 +76,24 @@ export class AudioProvider extends Component {
         let previousAudio = await AsyncStorage.getItem('previousAudio')
         let currentAudio
         let currentAudioIndex
+        let playbackPosition
 
         if (previousAudio === null) {
             currentAudio = this.state.audioFiles[0]
             currentAudioIndex = 0
+            playbackPosition = 0
         } else {
             previousAudio = JSON.parse(previousAudio)
             currentAudio = previousAudio.audio
             currentAudioIndex = previousAudio.index
+            if (previousAudio.audio.lastPosition) {
+                playbackPosition = previousAudio.audio.lastPosition
+            } else {
+                playbackPosition = 0
+            }
         }
 
-        this.setState({ ...this.state, currentAudio, currentAudioIndex })
+        this.setState({ ...this.state, currentAudio, currentAudioIndex, playbackPosition })
     }
 
     loadPreviousTheme = async () => {
@@ -133,7 +142,34 @@ export class AudioProvider extends Component {
             })
         }
 
+        if (playbackStatus.isLoaded && !playbackStatus.isPlaying) {
+            storeAudioForNextOpening(
+                this.state.currentAudio,
+                this.state.currentAudioIndex,
+                playbackStatus.positionMillis,
+                playbackStatus.durationMillis
+            )
+        }
+
         if (playbackStatus.didJustFinish) {
+            if (this.state.isPlayListRunning) {
+                let audio
+                const indexOnPlayList = this.state.activePlayList.audios.findIndex(({ id }) => id === this.state.currentAudio.id)
+                const nextIndex = indexOnPlayList + 1
+                audio = this.state.activePlayList.audios[nextIndex]
+
+                if (!audio) audio = this.state.activePlayList.audios[0]
+
+                const indexOnAllList = this.state.audioFiles.findIndex(({ id }) => id === audio.id)
+
+                const status = await playNext(this.state.playbackObj, audio.uri)
+                return this.updateState(this, {
+                    soundObj: status,
+                    isPlaying: true,
+                    currentAudio: audio,
+                    currentAudioIndex: indexOnAllList
+                })
+            }
             const nextAudioIndex = this.state.currentAudioIndex + 1
             // there is no next audio to play or the current audio is the last
             if (nextAudioIndex >= this.totalAudioCount) {
@@ -174,7 +210,7 @@ export class AudioProvider extends Component {
 
     render() {
         const { dataProvider, audioFiles, playList, addToPlayList, permissionError, playbackObj, soundObj, currentAudio, isPlaying,
-            currentAudioIndex, playbackPosition, playbackDuration, backgroundImg } = this.state
+            currentAudioIndex, playbackPosition, playbackDuration, backgroundImg, isPlayListRunning, activePlayList, } = this.state
 
         if (permissionError) return <View style={{
             flex: 1,
@@ -184,9 +220,10 @@ export class AudioProvider extends Component {
             <Text style={{ fontSize: 25, textAlign: 'center', color: COLOR_PRIMARY }}>It looks like you haven't accept the permission</Text>
         </View>
         return <AudioContext.Provider value={{
-            audioFiles, dataProvider, playList, addToPlayList, playbackObj, soundObj, currentAudio, updateState: this.updateState,
-            isPlaying, currentAudioIndex, playbackPosition, playbackDuration, totalAudioCount: this.totalAudioCount,
-            loadPreviousAudio: this.loadPreviousAudio, onPlaybackStatusUpdate: this.onPlaybackStatusUpdate, backgroundImg, loadPreviousTheme: this.loadPreviousTheme
+            audioFiles, dataProvider, playList, addToPlayList, playbackObj, soundObj, currentAudio, isPlaying, currentAudioIndex,
+            playbackPosition, playbackDuration, isPlayListRunning, activePlayList,
+            totalAudioCount: this.totalAudioCount, updateState: this.updateState, loadPreviousAudio: this.loadPreviousAudio,
+            onPlaybackStatusUpdate: this.onPlaybackStatusUpdate, backgroundImg, loadPreviousTheme: this.loadPreviousTheme
         }} >
             {this.props.children}
         </AudioContext.Provider>

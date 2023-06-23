@@ -1,9 +1,18 @@
 import { View, Text, Modal, FlatList, StyleSheet, TouchableWithoutFeedback } from 'react-native'
-import React from 'react'
+import React, { useContext } from 'react'
 import styles from './styles'
 import AudioListItem from '../AudioListItem'
+import { selectAudio } from '../../misc/audioController'
+import { AudioContext } from '../../context/AudioProvider'
 
 const PlayListDetail = ({ visible, playList, onClose }) => {
+
+    const context = useContext(AudioContext)
+
+    const playAudio = async (audio) => {
+        await selectAudio(audio, context, { activePlayList: playList, isPlayListRunning: true })
+    }
+
     return (
         <Modal visible={visible} animationType='slide' transparent onRequestClose={onClose}>
             <View style={styles.container} >
@@ -14,6 +23,9 @@ const PlayListDetail = ({ visible, playList, onClose }) => {
                     renderItem={({ item }) =>
                         <AudioListItem filename={item.filename}
                             duration={item.duration}
+                            isPlaying={context.isPlaying}
+                            activeListItem={item.id === context.currentAudio.id}
+                            onAudioPress={() => playAudio(item)}
                         />
                     }
                     contentContainerStyle={styles.listContainer}

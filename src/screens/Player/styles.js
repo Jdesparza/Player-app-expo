@@ -13,6 +13,15 @@ const styles = StyleSheet.create({
         // justifyContent: 'center',
         // alignItems: 'center'
     },
+    infoContainer: (isPlayListRunning) => ({
+        zIndex: 1,
+        flexDirection: 'row',
+        // backgroundColor: 'green',
+        justifyContent: isPlayListRunning ? 'space-between' : 'flex-end',
+        alignItems: 'center',
+        paddingHorizontal: 10,
+        paddingVertical: 5
+    }),
     audioCont: {
         textAlign: 'right',
         paddingHorizontal: 15,
@@ -26,8 +35,8 @@ const styles = StyleSheet.create({
         // alignItems: 'flex-end',
         paddingHorizontal: 5,
         paddingVertical: 5,
-        marginHorizontal: 10,
-        marginVertical: 5,
+        // marginHorizontal: 10,
+        // marginVertical: 5,
         // backgroundColor: 'yellow',
         justifyContent: 'center',
         alignItems: 'center'

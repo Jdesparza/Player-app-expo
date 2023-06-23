@@ -36,12 +36,17 @@ const Player = () => {
     const [optionModalVisible, setOptionModalVisible] = useState(false)
     const [currentPosition, setCurrentPosition] = useState(0)
 
-    const { playbackPosition, playbackDuration } = context
+    const { playbackPosition, playbackDuration, currentAudio } = context
 
     const calculateSeebBar = () => {
         if (playbackPosition !== null && playbackDuration !== null) {
             return playbackPosition / playbackDuration
         }
+
+        if (currentAudio.lastPosition) {
+            return currentAudio.lastPosition / (currentAudio.lastDuration)
+        }
+
         return 0
     }
 
@@ -58,6 +63,9 @@ const Player = () => {
     }
 
     const renderCurrentTime = () => {
+        if (!context.soundObj && currentAudio.lastPosition) {
+            return convertTime(currentAudio.lastPosition / 1000)
+        }
         return convertTime(playbackPosition / 1000)
     }
 
@@ -67,11 +75,25 @@ const Player = () => {
     }, [])
 
 
-    if (!context.currentAudio) return null
+    if (!currentAudio) return null
     return (
         <View style={styles.container}>
             {/* <Text style={styles.audioCont}>{`${context.currentAudioIndex + 1} / ${context.totalAudioCount}`}</Text> */}
-            <View style={{ alignItems: 'flex-end', justifyContent: 'flex-end', zIndex: 1 }}>
+            <View style={styles.infoContainer(context.isPlayListRunning)}>
+                {context.isPlayListRunning && (
+                    <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', opacity: .8 }}>
+                        <Text style={{
+                            color: context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY,
+                            fontSize: 14,
+                            fontWeight: '500',
+                            letterSpacing: 1
+                        }}>PlayList: </Text>
+                        <Text style={{
+                            color: context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY,
+                            fontSize: 13,
+                        }}>{context.activePlayList.title}</Text>
+                    </View>
+                )}
                 <TouchableOpacity style={styles.dotsTouchCont} onPress={() => {
                     setOptionModalVisible(true)
                 }}>
@@ -89,7 +111,7 @@ const Player = () => {
             )}
             <View style={styles.audioPlayerCont}>
                 <Text style={[styles.audioTitle, { color: context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY }]} numberOfLines={1}>
-                    {getFilename(context.currentAudio.filename)}
+                    {getFilename(currentAudio.filename)}
                 </Text>
                 <Slider
                     style={styles.slider}
@@ -123,7 +145,7 @@ const Player = () => {
                         {currentPosition ? currentPosition : renderCurrentTime()}
                     </Text>
                     <Text style={[styles.audioTime, { color: context.backgroundImg === 'BackImgBlur' ? COLOR_PRIMARY : COLOR_QUATERNARY }]}>
-                        {convertTime(playbackDuration / 1000)}
+                        {convertTime(currentAudio.lastDuration ? (currentAudio.lastDuration / 1000) : (playbackDuration / 1000))}
                     </Text>
                 </View>
                 <View style={styles.audioControllers}>
