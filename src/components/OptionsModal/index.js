@@ -4,7 +4,7 @@ import styles from './styles'
 import { AudioContext } from '../../context/AudioProvider'
 import { storeThemeBackgroundImgPlayer } from '../../misc/helper'
 
-const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayListPress }) => {
+const OptionsModal = ({ visible, onCloseModal, currentItem, options }) => {
 
     const { filename } = currentItem
     const context = useContext(AudioContext)
@@ -13,7 +13,7 @@ const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayL
     return (
         <>
             <StatusBar hidden={true} />
-            <Modal visible={visible} transparent animationType='slide' >
+            <Modal visible={visible} transparent animationType='slide' onRequestClose={onCloseModal} >
                 <View style={styles.modal}>
                     <Text numberOfLines={2} style={styles.title}>{filename}</Text>
                     <View style={styles.optionCont}>
@@ -43,12 +43,13 @@ const OptionsModal = ({ visible, onCloseModal, currentItem, onPlayPress, onPlayL
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <TouchableOpacity onPress={onPlayPress}>
-                            <Text style={styles.option}>Play</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={onPlayListPress}>
-                            <Text style={styles.option}>Add to Playlist</Text>
-                        </TouchableOpacity>
+                        {options && options.map(opt => {
+                            return (
+                                <TouchableOpacity key={opt.title} onPress={opt.onPress}>
+                                    <Text style={styles.option}>{opt.title}</Text>
+                                </TouchableOpacity>
+                            )
+                        })}
                     </View>
                 </View>
                 <TouchableWithoutFeedback onPress={onCloseModal} >

@@ -110,7 +110,6 @@ export const selectAudio = async (audio, context, playListInfo = {}) => {
         if (soundObj.isLoaded && currentAudio.id !== audio.id) {
             const status = await playNext(playbackObj, audio.uri);
             const index = audioFiles.findIndex(({ id }) => id === audio.id);
-            console.log('other audio')
             updateState(context, {
                 currentAudio: audio,
                 soundObj: status,

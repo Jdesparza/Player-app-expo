@@ -29,14 +29,14 @@ const getFilename = (filename) => {
     return 'Título desconocido'
 }
 
-const Player = () => {
+const Player = (props) => {
 
     const context = useContext(AudioContext)
 
     const [optionModalVisible, setOptionModalVisible] = useState(false)
     const [currentPosition, setCurrentPosition] = useState(0)
 
-    const { playbackPosition, playbackDuration, currentAudio } = context
+    const { playbackPosition, playbackDuration, currentAudio, updateState } = context
 
     const calculateSeebBar = () => {
         if (playbackPosition !== null && playbackDuration !== null) {
@@ -158,6 +158,17 @@ const Player = () => {
                 visible={optionModalVisible}
                 onCloseModal={() => { setOptionModalVisible(false) }}
                 currentItem={context.currentAudio}
+                options={[
+                    {
+                        title: 'Add to Playlist', onPress: () => {
+                            updateState(context, {
+                                addToPlayList: currentAudio,
+                            })
+                            setOptionModalVisible(false)
+                            props.navigation.navigate('PlayList')
+                        }
+                    }
+                ]}
             />
         </View>
     );

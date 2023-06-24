@@ -62,7 +62,8 @@ export class ListMusic extends Component {
                     this.currentItem = item
                     this.setState({ ...this.state, optionModalVisible: true })
                 }
-            } />
+            }
+        />
     }
 
     render() {
@@ -86,13 +87,18 @@ export class ListMusic extends Component {
                             visible={this.state.optionModalVisible}
                             onCloseModal={() => this.setState({ ...this.state, optionModalVisible: false })}
                             currentItem={this.currentItem}
-                            onPlayPress={() => console.log('playing audio')}
-                            onPlayListPress={() => {
-                                this.context.updateState(this.context, {
-                                    addToPlayList: this.currentItem,
-                                })
-                                this.props.navigation.navigate('PlayList')
-                            }}
+                            options={[
+                                { title: 'Play', onPress: () => console.log('playing audio') },
+                                {
+                                    title: 'Add to Playlist', onPress: () => {
+                                        this.context.updateState(this.context, {
+                                            addToPlayList: this.currentItem,
+                                        })
+                                        this.setState({ ...this.state, optionModalVisible: false })
+                                        this.props.navigation.navigate('PlayList')
+                                    }
+                                }
+                            ]}
                         />
                     </View>
                 )
