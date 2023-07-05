@@ -197,8 +197,19 @@ export class AudioProvider extends Component {
         }
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.getPermission()
+
+        try {
+            await Audio.setAudioModeAsync({
+                staysActiveInBackground: true,
+                // shouldDuckAndroid: true,
+                // playThroughEarpieceAndroid: true,
+            });
+        } catch (error) {
+            console.log('error, setAudio ', error)
+        }
+
         if (this.state.playbackObj === null) {
             this.setState({ ...this.state, playbackObj: new Audio.Sound() })
         }

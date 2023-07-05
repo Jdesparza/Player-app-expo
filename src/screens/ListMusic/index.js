@@ -36,7 +36,7 @@ export class ListMusic extends Component {
     })
 
     handleAudioPress = async (item) => {
-        if (this.context.currentAudio.id === item.id) {
+        if (this.context.currentAudio !== undefined && this.context.currentAudio.id === item.id) {
             await selectAudio({ ...item, lastPosition: this.context.currentAudio.lastPosition }, this.context)
         } else {
             await selectAudio(item, this.context)
