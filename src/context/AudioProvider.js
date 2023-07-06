@@ -211,15 +211,15 @@ export class AudioProvider extends Component {
         this.getNotificationPermission()
         this.getPermissionMediaLibrary()
 
-        // try {
-        //     await Audio.setAudioModeAsync({
-        //         staysActiveInBackground: true,
-        //         // shouldDuckAndroid: true,
-        //         // playThroughEarpieceAndroid: true,
-        //     });
-        // } catch (error) {
-        //     console.log('error, setAudio ', error)
-        // }
+        try {
+            await Audio.setAudioModeAsync({
+                staysActiveInBackground: true,
+                // shouldDuckAndroid: true,
+                // playThroughEarpieceAndroid: true,
+            });
+        } catch (error) {
+            console.log('error, setAudio ', error)
+        }
 
         if (this.state.playbackObj === null) {
             this.setState({ ...this.state, playbackObj: new Audio.Sound() })
