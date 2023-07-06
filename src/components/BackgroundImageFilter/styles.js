@@ -26,13 +26,13 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, .3)',
     },
     contImage: {
-        width: width - 30,
-        height: width,
+        width: width - 35,
+        height: width - 20,
         borderRadius: 20,
         // overflow: 'hidden',
         padding: 15,
         position: 'absolute',
-        top: (height - width - 15 - 180) / 2.5
+        top: (height - 45 - 230 - width + 20 - 15),
     },
     image: {
         resizeMode: 'cover',

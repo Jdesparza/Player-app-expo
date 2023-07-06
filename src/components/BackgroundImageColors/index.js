@@ -35,7 +35,7 @@ const BackgroundImageColors = () => {
                         'transparent',
                         colors.average != '#000000' ? colors.average : '#353540',
                     ]}
-                    locations={[0.21, 0.27, 0.6, 0.67]}
+                    locations={[0.15, 0.21, 0.545, 0.61]}
                     style={styles.gradientImg}
                 />
                 <Image source={imageUri} style={styles.image} />

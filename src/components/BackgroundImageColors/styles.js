@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        zIndex: 0
+        zIndex: 0,
     },
     gradientImg: {
         position: 'absolute',
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     image: {
         width,
         height: width,
-        marginBottom: width / 4,
+        marginBottom: (height - width) / 2,
     },
 })
 

@@ -60,16 +60,24 @@ export class AudioProvider extends Component {
         const { dataProvider, audioFiles } = this.state
 
         let media = await MediaLibrary.getAssetsAsync({
-            mediaType: 'audio'
+            mediaType: 'audio',
         })
 
         media = await MediaLibrary.getAssetsAsync({
             mediaType: 'audio',
             first: media.totalCount,
+            sortBy: 'modificationTime',
         })
-        this.totalAudioCount = media.totalCount
 
-        this.setState({ ...this.state, dataProvider: dataProvider.cloneWithRows([...audioFiles, ...media.assets]), audioFiles: [...audioFiles, ...media.assets] })
+        const filteredMedia = media.assets.filter(
+            (asset) => !asset.uri.includes('/ringtone/')
+                && !asset.uri.includes('/Android/')
+                && !asset.uri.includes('/Voice Recorder/')
+        );
+
+        this.totalAudioCount = filteredMedia.length
+
+        this.setState({ ...this.state, dataProvider: dataProvider.cloneWithRows([...audioFiles, ...filteredMedia]), audioFiles: [...audioFiles, ...filteredMedia] })
     }
 
     loadPreviousAudio = async () => {
@@ -210,15 +218,15 @@ export class AudioProvider extends Component {
         // this.getNotificationPermission()
         this.getPermissionMediaLibrary()
 
-        // try {
-        //     await Audio.setAudioModeAsync({
-        //         staysActiveInBackground: true,
-        //         // shouldDuckAndroid: true,
-        //         // playThroughEarpieceAndroid: true,
-        //     });
-        // } catch (error) {
-        //     console.log('error, setAudio ', error)
-        // }
+        try {
+            await Audio.setAudioModeAsync({
+                staysActiveInBackground: true,
+                // shouldDuckAndroid: true,
+                // playThroughEarpieceAndroid: true,
+            });
+        } catch (error) {
+            console.log('error, setAudio ', error)
+        }
 
         if (this.state.playbackObj === null) {
             this.setState({ ...this.state, playbackObj: new Audio.Sound() })

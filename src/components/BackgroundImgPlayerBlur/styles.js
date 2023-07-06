@@ -10,15 +10,15 @@ const styles = StyleSheet.create({
         padding: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        // backgroundColor: 'green',
+        // backgroundColor: 'red',
         // opacity: isPlayPause ? 1 : 0.8,
         // transform: [{ scale: isPlayPause ? 1 : .8 }],
         position: 'absolute',
-        top: (height - width - 15 - 180 - 45 - 10) / 2.5,
+        top: (height - width - 15 - 230 - 45 - 10) / 2.5,
         left: 0,
         right: 0,
-        bottom: 180,
-        zIndex: 0
+        bottom: 230,
+        zIndex: 10
     }),
     image: {
         width: width - 40,

@@ -22,6 +22,8 @@ const PlayListDetail = ({ navigationPlayer, visible, playList, onClose }) => {
     }
 
     useEffect(() => {
+        context.loadPreviousAudio()
+        context.loadPreviousTheme()
         setAudios(playList.audios)
     }, [playList]);
 
@@ -148,7 +150,7 @@ const PlayListDetail = ({ navigationPlayer, visible, playList, onClose }) => {
                                 <AudioListItem filename={item.filename}
                                     duration={item.duration}
                                     isPlaying={context.isPlaying}
-                                    activeListItem={item.id === context.currentAudio.id}
+                                    activeListItem={context.currentAudio !== undefined ? item.id === context.currentAudio.id : false}
                                     onAudioPress={() => {
                                         playAudio(item)
                                         navigationPlayer(item)

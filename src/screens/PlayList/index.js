@@ -60,9 +60,9 @@ const PlayList = ({ navigation }) => {
     }, [])
 
     const hanldeBannerPress = async (playList) => {
-
+        // console.log(playList)
         if (addToPlayList) {
-            // console.log(playList)
+            // console.log('addToPlayList', addToPlayList)
             const result = await AsyncStorage.getItem('playlist')
             let oldList = []
             let updatedList = []
@@ -127,9 +127,10 @@ const PlayList = ({ navigation }) => {
             <PlayListDetail
                 navigationPlayer={(item) => {
                     let soundObj = context.soundObj
-                    let index = context.currentAudio.id
+                    let index
+                    if (context.currentAudio !== undefined) index = context.currentAudio.id
 
-                    if (soundObj === null || (soundObj.isLoaded && index !== item.id)) {
+                    if (soundObj === null || (context.currentAudio !== undefined && soundObj.isLoaded && index !== item.id)) {
                         setShowPlayList(false)
                         navigation.navigate('Player')
                     }

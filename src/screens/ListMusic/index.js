@@ -55,11 +55,14 @@ export class ListMusic extends Component {
             onAudioPress={
                 () => {
                     let soundObj = this.context.soundObj
-                    let index = this.context.currentAudio.id
+                    let index
+                    if (this.context.currentAudio !== undefined) index = this.context.currentAudio.id
 
                     this.handleAudioPress(item)
-                    if (soundObj === null || (soundObj.isLoaded && index !== item.id)) {
+
+                    if (soundObj === null || (this.context.currentAudio !== undefined && soundObj.isLoaded && index !== item.id)) {
                         this.props.navigation.navigate('Player')
+                        // console.log('navegar')
                     }
                 }
             }
