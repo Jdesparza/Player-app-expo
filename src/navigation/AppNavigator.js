@@ -12,20 +12,20 @@ import { AudioContext } from '../context/AudioProvider'
 
 const Tab = createBottomTabNavigator()
 
-const AppNavigator = () => {
+const AppNavigator = ({ route }) => {
+    const [colorNav, setColorNav] = useState(COLOR_PRIMARY)
+    const [isPlayer, setIsPlayer] = useState(null)
 
-    const { isScreen, backgroundImg } = useContext(AudioContext)
-    const [colorNav, setColorNav] = useState(null)
-
-    useEffect(() => {
-        // console.log(isScreen)
-        if (isScreen && backgroundImg !== 'BackImgBlur') {
+    // Función que recibe un dato
+    const handleData = (info) => {
+        // console.log('Dato recibido:', info);
+        setIsPlayer(info.isPlayer)
+        if (info.isPlayer && info.isBackgroundImg !== 'BackImgBlur') {
             setColorNav('white')
         } else {
             setColorNav(COLOR_PRIMARY)
         }
-    }, [isScreen, backgroundImg])
-
+    };
 
     return (
         <Tab.Navigator screenOptions={{
@@ -35,8 +35,8 @@ const AppNavigator = () => {
                 height: 50,
                 backgroundColor: 'transparent',
                 elevation: 0,
-                borderTopColor: 'rgba(230, 230, 230, 1)',
-                borderTopWidth: isScreen ? 0 : 1
+                borderTopColor: 'rgba(56, 77, 94, .15)',
+                borderTopWidth: isPlayer ? 0 : 1
             },
             tabBarActiveTintColor: colorNav,
             tabBarShowLabel: false,
@@ -50,15 +50,19 @@ const AppNavigator = () => {
                     </View>
                 )
             }} />
-            <Tab.Screen name='Player' component={Player} options={{
+            <Tab.Screen name='Player' options={{
                 tabBarIcon: ({ color, size }) => (
                     <View style={styles.viewIcon}>
                         <Ionicons name="musical-notes" size={size} color={color} style={styles.icon} />
                         {(color === COLOR_PRIMARY || color === 'white') && <Text style={styles.textIcon(color)}>.</Text>}
                     </View>
                 ),
-                headerShown: false
-            }} />
+                headerShown: false,
+            }}>
+                {props => (
+                    <Player {...props} handleDataProp={handleData} />
+                )}
+            </Tab.Screen>
             <Tab.Screen name='PlayList' component={PlayList} options={{
                 tabBarIcon: ({ color, size }) => (
                     <View style={styles.viewIcon}>

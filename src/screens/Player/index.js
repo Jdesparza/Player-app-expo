@@ -17,7 +17,7 @@ import OptionsModal from "../../components/OptionsModal";
 import BackgroundImageFilter from "../../components/BackgroundImageFilter";
 import { useIsFocused } from '@react-navigation/native';
 
-const Player = (props) => {
+const Player = ({ navigation, handleDataProp }) => {
 
     const context = useContext(AudioContext)
     const isFocused = useIsFocused();
@@ -64,24 +64,11 @@ const Player = (props) => {
     }, [])
 
     useEffect(() => {
-        if (isFocused) {
-            updateState(context, {
-                isScreen: true
-            })
-        } else {
-            updateState(context, {
-                isScreen: false
-            })
-        }
-    }, [isFocused])
-
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         updateState(context, {
-    //             isScreen: true
-    //         })
-    //     }, [])
-    // );
+        handleDataProp({
+            isPlayer: isFocused,
+            isBackgroundImg: context.backgroundImg
+        })
+    }, [isFocused, context.backgroundImg])
 
 
     if (!currentAudio) return null
@@ -174,7 +161,7 @@ const Player = (props) => {
                                 addToPlayList: currentAudio,
                             })
                             setOptionModalVisible(false)
-                            props.navigation.navigate('PlayList')
+                            navigation.navigate('PlayList')
                         }
                     }
                 ]}

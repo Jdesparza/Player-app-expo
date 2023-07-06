@@ -54,8 +54,13 @@ export class ListMusic extends Component {
             activeListItem={this.context.currentAudioIndex === index}
             onAudioPress={
                 () => {
+                    let soundObj = this.context.soundObj
+                    let index = this.context.currentAudio.id
+
                     this.handleAudioPress(item)
-                    this.props.navigation.navigate('Player')
+                    if (soundObj === null || (soundObj.isLoaded && index !== item.id)) {
+                        this.props.navigation.navigate('Player')
+                    }
                 }
             }
             onOptionPress={

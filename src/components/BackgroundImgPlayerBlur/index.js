@@ -35,7 +35,7 @@ const BackgroundImgPlayerBlur = ({ isPlayPause, isVisible }) => {
             if (rotationAnimation && !isStopAnim) {
                 setIsAnimating(true);
                 Animated.loop(rotationAnimation).start(
-                    console.log('anim')
+                    // console.log('anim')
                 )
             } else {
                 if (isAnimating) {

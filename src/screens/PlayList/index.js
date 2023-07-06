@@ -9,7 +9,7 @@ import { useFocusEffect } from '@react-navigation/native';
 
 let selectedPlayList = {}
 
-const PlayList = () => {
+const PlayList = ({ navigation }) => {
 
     const [modalVisible, setModalVisible] = useState(false)
     const [showPlayList, setShowPlayList] = useState(false)
@@ -124,7 +124,20 @@ const PlayList = () => {
                     onSubmit={createPlayList}
                 />
             </ScrollView>
-            <PlayListDetail visible={showPlayList} playList={selectedPlayList} onClose={() => setShowPlayList(false)} />
+            <PlayListDetail
+                navigationPlayer={(item) => {
+                    let soundObj = context.soundObj
+                    let index = context.currentAudio.id
+
+                    if (soundObj === null || (soundObj.isLoaded && index !== item.id)) {
+                        setShowPlayList(false)
+                        navigation.navigate('Player')
+                    }
+                }}
+                visible={showPlayList}
+                playList={selectedPlayList}
+                onClose={() => setShowPlayList(false)}
+            />
         </>
     )
 }

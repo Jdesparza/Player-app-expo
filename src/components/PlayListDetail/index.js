@@ -10,7 +10,7 @@ import { COLOR_PRIMARY } from '../../utils/paleta'
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const PlayListDetail = ({ visible, playList, onClose }) => {
+const PlayListDetail = ({ navigationPlayer, visible, playList, onClose }) => {
 
     const context = useContext(AudioContext)
     const [optionModalVisible, setOptionModalVisible] = useState(false)
@@ -149,7 +149,10 @@ const PlayListDetail = ({ visible, playList, onClose }) => {
                                     duration={item.duration}
                                     isPlaying={context.isPlaying}
                                     activeListItem={item.id === context.currentAudio.id}
-                                    onAudioPress={() => playAudio(item)}
+                                    onAudioPress={() => {
+                                        playAudio(item)
+                                        navigationPlayer(item)
+                                    }}
                                     onOptionPress={() => {
                                         setSelectedItem(item);
                                         setOptionModalVisible(true);

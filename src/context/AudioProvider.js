@@ -38,7 +38,6 @@ export class AudioProvider extends Component {
             playbackPosition: null,
             playbackDuration: null,
             backgroundImg: null,
-            isScreen: false
         }
         this.totalAudioCount = 0
     }
@@ -208,18 +207,18 @@ export class AudioProvider extends Component {
     }
 
     async componentDidMount() {
-        this.getNotificationPermission()
+        // this.getNotificationPermission()
         this.getPermissionMediaLibrary()
 
-        try {
-            await Audio.setAudioModeAsync({
-                staysActiveInBackground: true,
-                // shouldDuckAndroid: true,
-                // playThroughEarpieceAndroid: true,
-            });
-        } catch (error) {
-            console.log('error, setAudio ', error)
-        }
+        // try {
+        //     await Audio.setAudioModeAsync({
+        //         staysActiveInBackground: true,
+        //         // shouldDuckAndroid: true,
+        //         // playThroughEarpieceAndroid: true,
+        //     });
+        // } catch (error) {
+        //     console.log('error, setAudio ', error)
+        // }
 
         if (this.state.playbackObj === null) {
             this.setState({ ...this.state, playbackObj: new Audio.Sound() })
@@ -232,7 +231,6 @@ export class AudioProvider extends Component {
 
     render() {
         const { dataProvider, audioFiles, playList, addToPlayList, permissionError, playbackObj, soundObj, currentAudio, isPlaying,
-            isScreen,
             currentAudioIndex, playbackPosition, playbackDuration, backgroundImg, isPlayListRunning, activePlayList, } = this.state
 
         if (permissionError) return <View style={{
@@ -244,7 +242,7 @@ export class AudioProvider extends Component {
         </View>
         return <AudioContext.Provider value={{
             audioFiles, dataProvider, playList, addToPlayList, playbackObj, soundObj, currentAudio, isPlaying, currentAudioIndex,
-            playbackPosition, playbackDuration, isPlayListRunning, activePlayList, isScreen,
+            playbackPosition, playbackDuration, isPlayListRunning, activePlayList,
             totalAudioCount: this.totalAudioCount, updateState: this.updateState, loadPreviousAudio: this.loadPreviousAudio,
             onPlaybackStatusUpdate: this.onPlaybackStatusUpdate, backgroundImg, loadPreviousTheme: this.loadPreviousTheme
         }} >
