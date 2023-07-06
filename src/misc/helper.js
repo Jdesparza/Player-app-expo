@@ -34,3 +34,16 @@ export const convertTime = minutes => {
         return `${minute}:${sec}`
     }
 }
+
+export const getFilename = (filename) => {
+    if (filename !== undefined) {
+        // Eliminar el formato .mp3 y otros formatos de audio
+        const cleanedFilename = filename.replace(/\.(mp3|m4a)$/i, '');
+
+        // Eliminar otros formatos de audio
+        const cleanedFilenameWithoutAudio = cleanedFilename.replace(/\.(MP3|MP3_160K|MP3_128K)$/i, '');
+
+        return cleanedFilenameWithoutAudio;
+    }
+    return 'Título desconocido'
+}

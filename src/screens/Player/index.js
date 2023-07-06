@@ -8,30 +8,19 @@ import { COLOR_PRIMARY, COLOR_QUATERNARY } from "../../utils/paleta";
 import PlayerButtton from "../../components/PlayerButton";
 import { AudioContext } from "../../context/AudioProvider";
 import { changeAudio, moveAudio, pause, play, playNext, resume, selectAudio } from "../../misc/audioController";
-import { convertTime, storeAudioForNextOpening, storeThemeBackgroundImgPlayer } from "../../misc/helper";
+import { convertTime, getFilename, storeAudioForNextOpening, storeThemeBackgroundImgPlayer } from "../../misc/helper";
 import BackgroundImageColors from "../../components/BackgroundImageColors";
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import color from "../../misc/color";
 import OptionsModal from "../../components/OptionsModal";
 import BackgroundImageFilter from "../../components/BackgroundImageFilter";
-
-const getFilename = (filename) => {
-    if (filename !== undefined) {
-        // Eliminar el formato .mp3 y otros formatos de audio
-        const cleanedFilename = filename.replace(/\.(mp3|m4a)$/i, '');
-
-        // Eliminar otros formatos de audio
-        const cleanedFilenameWithoutAudio = cleanedFilename.replace(/\.(MP3|MP3_160K|MP3_128K)$/i, '');
-
-        return cleanedFilenameWithoutAudio;
-    }
-    return 'Título desconocido'
-}
+import { useIsFocused } from '@react-navigation/native';
 
 const Player = (props) => {
 
     const context = useContext(AudioContext)
+    const isFocused = useIsFocused();
 
     const [optionModalVisible, setOptionModalVisible] = useState(false)
     const [currentPosition, setCurrentPosition] = useState(0)
@@ -73,6 +62,26 @@ const Player = (props) => {
         context.loadPreviousAudio()
         context.loadPreviousTheme()
     }, [])
+
+    useEffect(() => {
+        if (isFocused) {
+            updateState(context, {
+                isScreen: true
+            })
+        } else {
+            updateState(context, {
+                isScreen: false
+            })
+        }
+    }, [isFocused])
+
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         updateState(context, {
+    //             isScreen: true
+    //         })
+    //     }, [])
+    // );
 
 
     if (!currentAudio) return null

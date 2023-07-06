@@ -6,7 +6,7 @@ import { LayoutProvider, RecyclerListView } from 'recyclerlistview'
 import AudioListItem from '../../components/AudioListItem'
 import OptionsModal from '../../components/OptionsModal'
 import { Audio } from 'expo-av'
-import { pause, play, playNext, resume, selectAudio } from '../../misc/audioController'
+import { pause, play, playNext, pushNotify, resume, selectAudio } from '../../misc/audioController'
 import { storeAudioForNextOpening } from '../../misc/helper'
 
 export class ListMusic extends Component {
@@ -55,6 +55,7 @@ export class ListMusic extends Component {
             onAudioPress={
                 () => {
                     this.handleAudioPress(item)
+                    this.props.navigation.navigate('Player')
                 }
             }
             onOptionPress={
@@ -71,7 +72,7 @@ export class ListMusic extends Component {
             {({ dataProvider, isPlaying }) => {
                 if (!dataProvider._data.length) return null
                 return (
-                    <View style={{ flex: 1, backgroundColor: 'rgba(250,250,250,1)' }}>
+                    <View style={{ flex: 1, backgroundColor: 'rgba(250,250,250,1)', paddingBottom: 50 }}>
                         <RecyclerListView
                             dataProvider={dataProvider}
                             layoutProvider={this.layoutProvider}
@@ -88,7 +89,6 @@ export class ListMusic extends Component {
                             onCloseModal={() => this.setState({ ...this.state, optionModalVisible: false })}
                             currentItem={this.currentItem}
                             options={[
-                                { title: 'Play', onPress: () => console.log('playing audio') },
                                 {
                                     title: 'Add to Playlist', onPress: () => {
                                         this.context.updateState(this.context, {

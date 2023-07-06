@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
         width,
         // height: 180,
         position: 'absolute',
-        bottom: 0,
+        bottom: 50,
         left: 0,
         right: 0,
         // padding: 10,

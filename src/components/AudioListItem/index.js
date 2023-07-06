@@ -4,16 +4,7 @@ import styles from './styles'
 
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import color from '../../misc/color';
-
-const getFilename = (filename) => {
-    // Eliminar el formato .mp3 y otros formatos de audio
-    const cleanedFilename = filename.replace(/\.(mp3|m4a)$/i, '');
-
-    // Eliminar otros formatos de audio
-    const cleanedFilenameWithoutAudio = cleanedFilename.replace(/\.(MP3|MP3_160K|MP3_128K)$/i, '');
-
-    return cleanedFilenameWithoutAudio;
-}
+import { getFilename } from '../../misc/helper';
 
 const renderPlayPauseIcon = isPlaying => {
     if (isPlaying) return <Image style={[styles.imgAudio, styles.imgAudioPlay(isPlaying)]} source={require('../../../assets/images/sound.gif')} />

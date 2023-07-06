@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Audio } from 'expo-av'
 import { playNext } from '../misc/audioController'
 import { storeAudioForNextOpening } from '../misc/helper'
+import * as Notifications from 'expo-notifications';
 
 export const AudioContext = createContext()
 
@@ -36,7 +37,8 @@ export class AudioProvider extends Component {
             currentAudioIndex: null,
             playbackPosition: null,
             playbackDuration: null,
-            backgroundImg: null
+            backgroundImg: null,
+            isScreen: false
         }
         this.totalAudioCount = 0
     }
@@ -45,7 +47,7 @@ export class AudioProvider extends Component {
         Alert.alert('Permission Required', 'This app needs to read audio files!', [
             {
                 text: 'I am Ready',
-                onPress: () => this.getPermission()
+                onPress: () => this.getPermissionMediaLibrary()
             },
             {
                 text: 'cancel',
@@ -110,8 +112,9 @@ export class AudioProvider extends Component {
         this.setState({ ...this.state, backgroundImg })
     }
 
-    getPermission = async () => {
+    getPermissionMediaLibrary = async () => {
         const permission = await MediaLibrary.getPermissionsAsync()
+
         if (permission.granted) {
             this.getAudioFiles()
         }
@@ -132,6 +135,13 @@ export class AudioProvider extends Component {
             }
         }
     }
+
+    getNotificationPermission = async () => {
+        const { status } = await Notifications.requestPermissionsAsync();
+        if (status !== 'granted') {
+            console.log('El permiso de notificación no ha sido otorgado');
+        }
+    };
 
     onPlaybackStatusUpdate = async (playbackStatus) => {
         // console.log(playbackStatus)
@@ -198,17 +208,18 @@ export class AudioProvider extends Component {
     }
 
     async componentDidMount() {
-        this.getPermission()
+        this.getNotificationPermission()
+        this.getPermissionMediaLibrary()
 
-        try {
-            await Audio.setAudioModeAsync({
-                staysActiveInBackground: true,
-                // shouldDuckAndroid: true,
-                // playThroughEarpieceAndroid: true,
-            });
-        } catch (error) {
-            console.log('error, setAudio ', error)
-        }
+        // try {
+        //     await Audio.setAudioModeAsync({
+        //         staysActiveInBackground: true,
+        //         // shouldDuckAndroid: true,
+        //         // playThroughEarpieceAndroid: true,
+        //     });
+        // } catch (error) {
+        //     console.log('error, setAudio ', error)
+        // }
 
         if (this.state.playbackObj === null) {
             this.setState({ ...this.state, playbackObj: new Audio.Sound() })
@@ -221,6 +232,7 @@ export class AudioProvider extends Component {
 
     render() {
         const { dataProvider, audioFiles, playList, addToPlayList, permissionError, playbackObj, soundObj, currentAudio, isPlaying,
+            isScreen,
             currentAudioIndex, playbackPosition, playbackDuration, backgroundImg, isPlayListRunning, activePlayList, } = this.state
 
         if (permissionError) return <View style={{
@@ -232,7 +244,7 @@ export class AudioProvider extends Component {
         </View>
         return <AudioContext.Provider value={{
             audioFiles, dataProvider, playList, addToPlayList, playbackObj, soundObj, currentAudio, isPlaying, currentAudioIndex,
-            playbackPosition, playbackDuration, isPlayListRunning, activePlayList,
+            playbackPosition, playbackDuration, isPlayListRunning, activePlayList, isScreen,
             totalAudioCount: this.totalAudioCount, updateState: this.updateState, loadPreviousAudio: this.loadPreviousAudio,
             onPlaybackStatusUpdate: this.onPlaybackStatusUpdate, backgroundImg, loadPreviousTheme: this.loadPreviousTheme
         }} >

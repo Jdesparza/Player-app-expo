@@ -1,4 +1,5 @@
-import { storeAudioForNextOpening } from './helper';
+import { getFilename, storeAudioForNextOpening } from './helper';
+import * as Notifications from 'expo-notifications';
 
 // play audio
 export const play = async (playbackObj, uri, lastPosition) => {
@@ -263,3 +264,38 @@ export const moveAudio = async (context, value) => {
         console.log('error inside onSlidingComplete callback', error);
     }
 };
+
+export const pushNotify = async (audio) => {
+    Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: false,
+            shouldSetBadge: false,
+        }),
+    });
+
+    const notificationContent = {
+        title: 'Mi notificación personalizada',
+        body: 'Descripción de la notificación',
+        data: {}, // Puedes agregar datos adicionales a la notificación
+        categoryId: 'custom-category', // Identificador de categoría personalizada (opcional)
+        sticky: true,
+    };
+
+    await Notifications.setNotificationCategoryAsync('custom-category', [
+        {
+            identifier: 'action-1',
+            buttonTitle: 'Acción 1',
+            // Puedes agregar más propiedades como `textInput` para recibir entrada de texto en la notificación
+        },
+        {
+            identifier: 'action-2',
+            buttonTitle: 'Acción 2',
+        },
+    ]);
+
+    await Notifications.scheduleNotificationAsync({
+        content: notificationContent,
+        trigger: null, // Puedes especificar un disparador para programar la notificación en un momento específico
+    });
+}

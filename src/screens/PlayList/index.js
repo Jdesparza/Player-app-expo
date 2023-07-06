@@ -5,6 +5,7 @@ import PlayListInputModal from '../../components/PlayListInputModal'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { AudioContext } from '../../context/AudioProvider'
 import PlayListDetail from '../../components/PlayListDetail'
+import { useFocusEffect } from '@react-navigation/native';
 
 let selectedPlayList = {}
 
@@ -59,7 +60,9 @@ const PlayList = () => {
     }, [])
 
     const hanldeBannerPress = async (playList) => {
+
         if (addToPlayList) {
+            // console.log(playList)
             const result = await AsyncStorage.getItem('playlist')
             let oldList = []
             let updatedList = []
